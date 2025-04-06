@@ -33,6 +33,25 @@ namespace DMS.API.Controllers.Auth
             return Ok(transferObject);
         }
 
+        [HttpPost("LoginFace")]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginFace([FromBody] FaceLoginRequest base64Image)
+        {
+            var transferObject = new TransferObject();
+            var loginResult = await _service.LoginFace(base64Image.ImageBase64);
+            if (_service.Status)
+            {
+                transferObject.Data = loginResult;
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("1000", _service);
+            }
+            return Ok(transferObject);
+        }
+
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto refreshTokenDto)
         {

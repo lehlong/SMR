@@ -12,12 +12,16 @@ using DMS.CORE.Entities.AD;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
 using Common.Util;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace DMS.BUSINESS.Services.Auth
 {
     public interface IAuthService : IGenericService<TblAdAccount, AccountDto>
     {
         Task<JWTTokenDto> Login(LoginDto loginInfo);
+        Task<JWTTokenDto> LoginFace(string base64Image);
         Task<AccountDto> GetAccount(string userName);
         Task ChangePassword(ChangePasswordDto changePasswordDto);
         Task<JWTTokenDto> RefreshToken(RefreshTokenDto refreshTokenDto);
@@ -81,6 +85,103 @@ namespace DMS.BUSINESS.Services.Auth
                 return null;
             }
         }
+
+        public async Task<JWTTokenDto> LoginFace(string base64Image)
+        {
+            try
+            {
+                var result = await GetUIdFaceFromBase64(base64Image);
+
+
+                await _dbContext.Database.BeginTransactionAsync();
+                var authUser = await AuthenticationProcessFace(result);
+                if (Status)
+                {
+                    var account = _mapper.Map<AccountLoginDto>(authUser);
+                    var refreshToken = await GenerateRefreshToken(account.UserName);
+                    if (Status)
+                    {
+                        var token = GeneratenJwtToken(account.UserName, account.FullName);
+                        await _dbContext.Database.CommitTransactionAsync();
+                        return new()
+                        {
+                            AccountInfo = account,
+                            AccessToken = token.Item1,
+                            ExpireDate = token.Item2,
+                            RefreshToken = refreshToken.Item1,
+                            ExpireDateRefreshToken = refreshToken.Item2,
+                        };
+                    }
+                }
+                await _dbContext.Database.CommitTransactionAsync();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                await _dbContext.Database.RollbackTransactionAsync();
+                Status = false;
+                Exception = ex;
+                return null;
+            }
+        }
+
+        public async Task<string> GetUIdFaceFromBase64(string base64Image)
+        {
+            if (string.IsNullOrWhiteSpace(base64Image))
+                throw new ArgumentException("Dữ liệu ảnh base64 không hợp lệ");
+
+            var token = "cba287859e90fd581d177d499250f6aaf0524b739377a396cfd2684303fff302";
+
+            var base64Data = base64Image.Contains(",") ? base64Image.Split(',')[1] : base64Image;
+
+            byte[] imageBytes;
+            try
+            {
+                imageBytes = Convert.FromBase64String(base64Data);
+            }
+            catch (FormatException)
+            {
+                throw new ArgumentException("Chuỗi base64 không hợp lệ");
+            }
+
+            using (var httpClient = new HttpClient())
+            using (var form = new MultipartFormDataContent())
+            {
+                var fileContent = new ByteArrayContent(imageBytes);
+                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
+
+                form.Add(fileContent, "file", "face.jpg");
+                form.Add(new StringContent("true"), "anti_spoofing");
+                form.Add(new StringContent("0.7"), "threshold_spoofing");
+                form.Add(new StringContent("0.5"), "min_score");
+
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await httpClient.PostAsync("http://sso.d2s.com.vn:8559/search-face", form);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception($"Lỗi API: {response.StatusCode}, Nội dung: {responseContent}");
+
+                try
+                {
+                    using var doc = JsonDocument.Parse(responseContent);
+                    var root = doc.RootElement;
+
+                    var data = root.GetProperty("data");
+                    if (data.GetArrayLength() == 0)
+                        return null!; // hoặc throw nếu bạn muốn xử lý lỗi khi không có user
+
+                    var userId = data[0].GetProperty("user_id").GetString();
+                    return userId ?? string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Không thể phân tích kết quả JSON từ API", ex);
+                }
+            }
+        }
+
 
         public async Task<AccountDto> GetAccount(string userName)
         {
@@ -172,6 +273,33 @@ namespace DMS.BUSINESS.Services.Auth
 
             return account;
         }
+        private async Task<TblAdAccount> AuthenticationProcessFace(string faceId)
+        {
+            var account = await _dbContext.TblAdAccount
+                .Include(x => x.Account_AccountGroups)
+                .ThenInclude(x => x.AccountGroup)
+                //  .Include(x => x.Partner)
+                //  .Include(x => x.Driver)
+                .FirstOrDefaultAsync(
+                x => x.FaceId == faceId);
+
+            if (account == null)
+            {
+                Status = false;
+                MessageObject.Code = "1002"; //Sai username hoặc mật khẩu
+                return null;
+            }
+
+            if (!(account?.IsActive ?? true))
+            {
+                Status = false;
+                MessageObject.Code = "1003"; //Tài khoản bị khóa
+                return null;
+            }
+
+            return account;
+        }
+
 
         private (string, DateTime) GeneratenJwtToken(string? userName, string fullName)
         {

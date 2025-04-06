@@ -11,6 +11,7 @@ using Common;
 using Common.Util;
 using DMS.BUSINESS.Common.Enum;
 using Org.BouncyCastle.Tsp;
+using System.Net.Http.Headers;
 
 namespace DMS.BUSINESS.Services.AD
 {
@@ -21,6 +22,8 @@ namespace DMS.BUSINESS.Services.AD
         Task<IList<AccountDto>> GetAll(AccountFilterLite filter);
         Task<AccountTreeRightDto> GetByIdWithRightTree(object id);
         void ResetPassword(string username);
+        Task<string> RegisterFaceAsync(string username);
+        Task<string> GetUIdFace(string username);
     }
 
     public class AccountService(AppDbContext dbContext, IMapper mapper, IHubContext<RefreshServiceHub> hubContext) : GenericService<TblAdAccount, AccountDto>(dbContext, mapper), IAccountService
@@ -34,7 +37,7 @@ namespace DMS.BUSINESS.Services.AD
                 var query = _dbContext.TblAdAccount
                 .Include(x => x.Account_AccountGroups)
                 .ThenInclude(x => x.AccountGroup)
-               // .Include(x => x.OrganizeCode)
+                // .Include(x => x.OrganizeCode)
                 .AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
@@ -65,7 +68,7 @@ namespace DMS.BUSINESS.Services.AD
                     query = query.Where(x => x.IsActive == filter.IsActive);
                 }
 
-                  if (filter.GroupId.HasValue)
+                if (filter.GroupId.HasValue)
                 {
                     query = query.Where(x => x.Account_AccountGroups.Any(x => x.GroupId == filter.GroupId));
                 }
@@ -148,7 +151,7 @@ namespace DMS.BUSINESS.Services.AD
                                         .ThenInclude(x => x.ListAccountGroupRight)
                                         .Include(x => x.AccountRights)
                                         .ThenInclude(x => x.Right)
-                                       // .Include(x=>x.Partner)
+                                        // .Include(x=>x.Partner)
                                         .FirstOrDefaultAsync(x => x.UserName == Id as string);
 
 
@@ -387,6 +390,80 @@ namespace DMS.BUSINESS.Services.AD
             {
                 Status = false;
                 Exception = ex;
+            }
+        }
+
+        public async Task<string> RegisterFaceAsync(string username)
+        {
+            var user = _dbContext.TblAdAccount.Find(username);
+
+            string fullImagePath = Path.GetFullPath(
+      Path.Combine(AppDomain.CurrentDomain.BaseDirectory, user.UrlImage.TrimStart('/', '\\'))
+  );
+            if (!File.Exists(fullImagePath))
+                throw new FileNotFoundException("Không tìm thấy ảnh: " + fullImagePath);
+
+            var token = "cba287859e90fd581d177d499250f6aaf0524b739377a396cfd2684303fff302";
+            var fileName = Path.GetFileName(fullImagePath);
+
+            using (var httpClient = new HttpClient())
+            using (var form = new MultipartFormDataContent())
+            {
+                var fileBytes = await File.ReadAllBytesAsync(fullImagePath);
+                var fileContent = new ByteArrayContent(fileBytes);
+                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
+
+                form.Add(fileContent, "file", fileName);
+                form.Add(new StringContent(user.FaceId), "user_id");
+                form.Add(new StringContent("true"), "anti_spoofing");
+                form.Add(new StringContent("0.7"), "threshold_spoofing");
+
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await httpClient.PostAsync("http://sso.d2s.com.vn:8559/register-face", form);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception($"Lỗi API: {response.StatusCode}, Nội dung: {responseContent}");
+
+                return responseContent;
+            }
+        }
+
+        public async Task<string> GetUIdFace(string username)
+        {
+            var user = _dbContext.TblAdAccount.Find(username);
+
+            string fullImagePath = Path.GetFullPath(
+      Path.Combine(AppDomain.CurrentDomain.BaseDirectory, user.UrlImage.TrimStart('/', '\\'))
+  );
+            if (!File.Exists(fullImagePath))
+                throw new FileNotFoundException("Không tìm thấy ảnh: " + fullImagePath);
+
+            var token = "cba287859e90fd581d177d499250f6aaf0524b739377a396cfd2684303fff302";
+            var fileName = Path.GetFileName(fullImagePath);
+
+            using (var httpClient = new HttpClient())
+            using (var form = new MultipartFormDataContent())
+            {
+                var fileBytes = await File.ReadAllBytesAsync(fullImagePath);
+                var fileContent = new ByteArrayContent(fileBytes);
+                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
+
+                form.Add(fileContent, "file", fileName);
+                form.Add(new StringContent("true"), "anti_spoofing");
+                form.Add(new StringContent("0.7"), "threshold_spoofing");
+                form.Add(new StringContent("0.5"), "min_score");
+
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await httpClient.PostAsync("http://sso.d2s.com.vn:8559/search-face", form);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception($"Lỗi API: {response.StatusCode}, Nội dung: {responseContent}");
+
+                return responseContent;
             }
         }
         public void ResetPassword(string username)

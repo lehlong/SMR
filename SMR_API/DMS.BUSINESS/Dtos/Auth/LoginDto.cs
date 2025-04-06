@@ -6,4 +6,8 @@
 
         public string Password { get; set; }
     }
+    public class FaceLoginRequest
+    {
+        public string ImageBase64 { get; set; }
+    }
 }

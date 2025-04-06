@@ -168,5 +168,45 @@ namespace DMS.API.Controllers.MD
             }
             return Ok(transferObject);
         }
+
+        [HttpPut("RegisterFace")]
+        public IActionResult RegisterFace([FromQuery] string username)
+        {
+            var transferObject = new TransferObject();
+            var result =  _service.RegisterFaceAsync(username);
+            if (_service.Status)
+            {
+                transferObject.Status = true;
+                transferObject.MessageObject.MessageType = MessageType.Success;
+                transferObject.GetMessage("0103", _service);
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("0104", _service);
+            }
+            return Ok(transferObject);
+        }
+        [HttpGet("GetUIdFace")]
+        public IActionResult GetUIdFace([FromQuery] string username)
+        {
+            var transferObject = new TransferObject();
+            var result = _service.GetUIdFace(username);
+            if (_service.Status)
+            {
+                transferObject.Data = result;
+                transferObject.Status = true;
+                transferObject.MessageObject.MessageType = MessageType.Success;
+                transferObject.GetMessage("0103", _service);
+            }
+            else
+            {
+                transferObject.Status = false;
+                transferObject.MessageObject.MessageType = MessageType.Error;
+                transferObject.GetMessage("0104", _service);
+            }
+            return Ok(transferObject);
+        }
     }
 }

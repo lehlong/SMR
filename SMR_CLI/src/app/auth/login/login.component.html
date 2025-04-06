@@ -1,72 +1,33 @@
-<div class="backgroundLogin">
-    <div class="logo-container">
-        <img src="img/logo.png" alt="Logo" class="logo">
-    </div>
-    <div class="Title-container">
-        
-    <h1 class="login-title">Hệ Thống Phòng họp thông minh</h1>
-    <h2 class="login-subtitle">SMR [Smart metting Room]</h2>
-    <div class="window-login">
-        <h3>Đăng nhập</h3>
-        <div class="card-container">
-            <nz-tabset nzType="card" [(nzSelectedIndex)]="activeTabIndex">
-              @for (tab of tabs; track $index) {
-                <nz-tab [nzTitle]="tab" class="tabbtn">
-                  @if (tab === 'FaceID') {
-                    <!-- FaceID component content -->
-                    <div class="face-id-container">
-                      <div class="camera-container">
-                        <div class="camera-circle">
-                          <video #videoElement id="videoElement" autoplay playsinline></video>
-                          <div class="camera-overlay">
-                            <div class="face-outline"></div>
-                          </div>
-                        </div>
-                        
-                        <div class="camera-controls">
-                          <button nz-button nzType="primary" class="camera-button" (click)="startCamera()">
-                            <span *ngIf="!cameraActive">Bắt đầu nhận diện</span>
-                            <span *ngIf="cameraActive">Thử lại</span>
-                          </button>
-                        </div>
-                        
-                        <div class="camera-status">
-                          <nz-spin *ngIf="isProcessing" nzTip="Đang nhận diện..."></nz-spin>
-                          <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
-                        </div>
-                      </div>
-                    </div>
-                  } @else {
-                    <!-- Account login form -->
-                    <form nz-form [formGroup]="validateForm" class="login-form" >
-                      <nz-form-item>
-                        <nz-form-label class="centered-label" [nzSpan]="5" nzRequired><h2>Tài Khoản </h2> </nz-form-label>
-                        <nz-form-control nzErrorTip="Please input your username!">
-                            <input class="wide-input"  type="text" nz-input formControlName="username" placeholder="Username" />
-                        </nz-form-control>
-                      </nz-form-item>
-                      <nz-form-item>
-                        <nz-form-label class="centered-label" [nzSpan]="5" nzRequired><h2>Mật khẩu </h2></nz-form-label>
-                        <nz-form-control nzErrorTip="Please input your password!">
-                            <input class="wide-input" type="text" nz-input formControlName="password" placeholder="password" />
-                        </nz-form-control>
-                      </nz-form-item>
-                      <div nz-row class="login-form-margin">
-                        <div nz-col [nzSpan]="12">
-                          <label nz-checkbox formControlName="remember">
-                            <span>Remember me</span>
-                          </label>
-                        </div>
-                       
-                      </div>
-                      <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'"><strong>Đăng nhập</strong></button>
+<div class="login">
+  <div class="login-form">
+    <nz-tabset nzCentered>
+      <nz-tab [nzTitle]="passwordTab" (nzClick)="stopWebcam()">
+        <ng-template #passwordTab><nz-icon nzType="key" />Mật khẩu</ng-template>
+        <div class="login-form-content">
+          <nz-input-group nzPrefixIcon="user">
+            <input type="text" nz-input placeholder="Tên đăng nhập" [(ngModel)]="model.userName"
+              (keydown.enter)="processLogin()" />
+          </nz-input-group>
+          <nz-input-group nzPrefixIcon="lock">
+            <input type="password" nz-input placeholder="Mật khẩu" [(ngModel)]="model.password"
+              (keydown.enter)="processLogin()" />
+          </nz-input-group>
+          <button nz-button class="btn-login" [nzType]="'primary'" (click)="processLogin()">Đăng nhập</button>
+        </div>
 
-                    </form>
-                  }
-                </nz-tab>
-              }
-            </nz-tabset>
-          </div>
-    </div>
-</div>
+
+      </nz-tab>
+      <nz-tab [nzTitle]="faceIdTab" (nzClick)="startWebcam()">
+        <ng-template #faceIdTab><nz-icon nzType="open-a-i" />FaceID</ng-template>
+        <div class="login-form-content">
+            <div class="face-id-content">
+              <div class="webcam-container">
+                <video #video autoplay playsinline></video>
+              </div>
+            </div>
+        </div>
+      </nz-tab>
+    </nz-tabset>
+
+  </div>
 </div>

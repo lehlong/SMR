@@ -37,6 +37,9 @@ namespace DMS.CORE.Entities.AD
         [Column("URL_IMAGE", TypeName = "VARCHAR(100)")]
         public string? UrlImage { get; set; }
 
+        [Column("FACE_ID", TypeName = "VARCHAR(100)")]
+        public string? FaceId { get; set; }
+
 
         public virtual ICollection<TblAdAccount_AccountGroup> Account_AccountGroups { get; set; }
 
