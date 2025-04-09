@@ -126,7 +126,8 @@ namespace DMS.CORE
 
         #region Master Data
         public DbSet<TblMdAccountType> tblMdAccountType { get; set; }
+        public DbSet<TblMdMeeting> TblMdMeeting { get; set; }
         #endregion
-       
+
     }
 }

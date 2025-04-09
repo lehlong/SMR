@@ -6,11 +6,13 @@ import { PaginationResult } from '../../models/base.model'
 import { AccountTypeService} from '../../service/master-data/account-type.service'
 import { GlobalService } from '../../service/global.service'
 import { NzMessageService } from 'ng-zorro-antd/message'
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+
 
 @Component({
   selector: 'app-account-type',
   standalone: true,
-  imports: [ShareModule],
+  imports: [ShareModule,NzDatePickerModule],
   templateUrl: './account-type.component.html',
   styleUrl: './account-type.component.scss',
 })
@@ -170,9 +172,11 @@ export class AccountTypeComponent {
     this.filter.pageSize = size
     this.search()
   }
+  
 
   pageIndexChange(index: number): void {
     this.filter.currentPage = index
     this.search()
   }
+  
 }
