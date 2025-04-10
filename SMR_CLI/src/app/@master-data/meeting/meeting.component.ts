@@ -33,9 +33,9 @@ export class CreateMettingComponent {
    ) {
     this.validateForm = this.fb.group({
       id: [''],
-      MeetingTitle: ['', [Validators.required]],
+      meetingTitle: ['', [Validators.required]],
       time: [null, [Validators.required]],
-      chairperson: ['', [Validators.required]],
+      chairPerson: ['', [Validators.required]],
 
       isActive: [true, [Validators.required]] })
    }
@@ -68,10 +68,16 @@ export class CreateMettingComponent {
   submitForm(): void {
     this.isSubmit = true
     if (this.validateForm.valid) {
+      const formData = this.validateForm.getRawValue();
+    
+      // Chuyển đổi time thành chuỗi ISO
+      if (formData.time instanceof Date) {
+        formData.time = formData.time.toISOString();
+      }
       if (this.edit) {
-        console.log(this.validateForm.getRawValue())
+       
         this._service
-          .update(this.validateForm.getRawValue())
+          .update(formData)
           .subscribe({
             next: (data) => {
               this.search()
@@ -81,9 +87,9 @@ export class CreateMettingComponent {
             },
           })
       } else {
-        
+        delete formData.id
         this._service
-          .create(this.validateForm.getRawValue())
+          .create(formData)
           .subscribe({
             next: (data) => {
               
@@ -123,8 +129,8 @@ openEdit(item: any) {
   this.visible = true
   this.validateForm.patchValue(item)
   this.validateForm.get('time')?.setValue(item.time ? new Date(item.time) : null)
-  this.validateForm.get('MeetingTitle')?.setValue(item.meetingTitle)
-  this.validateForm.get('chairperson')?.setValue(item.chairPerson)
+  this.validateForm.get('meetingTitle')?.setValue(item.meetingTitle)
+  this.validateForm.get('chairPerson')?.setValue(item.chairPerson)
   this.validateForm.get('isActive')?.setValue(item.isActive)
   this.validateForm.get('id')?.setValue(item.id)
   console.log(item)

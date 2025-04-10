@@ -15,12 +15,12 @@ namespace DMS.CORE.Entities.MD
     {
         [Key]
         [Column("ID")]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         [Column("MEETING_TITLE", TypeName = "NVARCHAR(255)")]
         public string? MeetingTitle { get; set; }
         [Column("CHAIR_PERSON")]
         public string? ChairPerson { get; set; }
         [Column("TIME")]
-        public string? Time { get; set; }
+        public DateTime Time { get; set; }
     }
 }

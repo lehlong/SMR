@@ -83,7 +83,7 @@
       <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
         
         <app-input-clear placeholder="Chủ đề cuộc họp" [required]="true" label="Chủ đề cuộc họp"
-          [control]="$any(validateForm).controls['MeetingTitle']" [required]="true"
+          [control]="$any(validateForm).controls['meetingTitle']" [required]="true"
           ></app-input-clear>
           <nz-form-item>
             <nz-form-label>người chủ trì </nz-form-label>
@@ -92,7 +92,7 @@
                 nzShowSearch
                 nzAllowClear
                 placeholder="Chọn kiểu người dùng"
-                formControlName="chairperson"
+                formControlName="chairPerson"
               >
                 <nz-option
                   cdkScrollable

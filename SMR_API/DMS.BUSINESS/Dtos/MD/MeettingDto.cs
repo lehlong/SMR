@@ -18,7 +18,7 @@ namespace DMS.BUSINESS.Dtos.MD
         [Key]
         [Description("Id")]
   
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         [Description("Nội dung cuộc họp")]
         public string? MeetingTitle { get; set; }
@@ -26,7 +26,7 @@ namespace DMS.BUSINESS.Dtos.MD
         [Description("Người chủ trì")]
         public string? ChairPerson { get; set; }
         [Description("thời gian")]
-        public string? Time { get; set; }
+        public DateTime Time { get; set; }
 
         [Description("Trạng thái")]
         public string State { get => this.IsActive == true ? "Đang hoạt động" : "Khóa"; }
