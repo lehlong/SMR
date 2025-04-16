@@ -3,3 +3,19 @@
   background: white;
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 }
+
+::ng-deep document-editor {
+  display: block;
+  height: calc(100vh - 100px);
+}
+
+.list-document{
+  width: 100%;
+  border-left: solid 1px #f0f0f0;
+  height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding-left: 12px;
+}
+.documents-item{
+  cursor: pointer;
+}

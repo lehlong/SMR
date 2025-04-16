@@ -1,45 +1,107 @@
 <div style="background-color: white;">
   <nz-tabset nzType="card" (nzSelectedIndexChange)="onTabChange($event)" nzCentered>
-  <nz-tab [nzTitle]="ttch">
-    <ng-template #ttch>
-      <nz-icon nzType="info-circle" />
-     Thông tin cuộc họp
-    </ng-template>
+    <!-- Tab Thông tin -->
+    <nz-tab [nzTitle]="ttch">
+      <ng-template #ttch>
+        <nz-icon nzType="info-circle" /> Thông tin cuộc họp
+      </ng-template>
+    </nz-tab>
 
-  </nz-tab>
+    <!-- Tab Văn bản -->
+    <nz-tab [nzTitle]="vb">
+      <ng-template #vb>
+        <nz-icon nzType="file" /> Văn bản
+      </ng-template>
 
-  <nz-tab [nzTitle]="vb">
-    <ng-template #vb>
-      <nz-icon nzType="file" />
-     Văn bản
-    </ng-template>
+      <div style="padding: 0 12px;height: calc(100vh - 48px);">
 
-    <div style="padding: 0 12px;">
-      <nz-tabset>
-        <nz-tab nzTitle="Tab 1">
-         
-          <document-editor
-            (id)="idramdom"
-            documentServerUrl="http://sso.d2s.com.vn:1239"
-            [config]="config"
-            [events_onDocumentReady]="onDocumentReady"
-            [onLoadComponentError]="onLoadComponentError"
-          ></document-editor>
-           <div> dday la tab 1</div>
-        </nz-tab>
-        <nz-tab nzTitle="Tab 2">Content of Tab Pane 2</nz-tab>
-        <nz-tab nzTitle="Tab 3">Content of Tab Pane 3</nz-tab>
-      </nz-tabset>
-    </div>
-  </nz-tab>
+        <div nz-row [nzGutter]="16">
+          <div nz-col class="gutter-row" [nzSpan]="18"><div class="inner-box">
+            <nz-tabset [(nzSelectedIndex)]="selectedIndex" nzType="editable-card" (nzClose)="closeTab($event)" nzHideAdd>
+              <ng-container *ngFor="let tab of tabs; trackBy: trackByTabId">
+                <nz-tab [nzClosable]="true" [nzTitle]="tab.title">
+                  <document-editor
+                    [id]="tab.id"
+                    [documentServerUrl]="'http://sso.d2s.com.vn:1239'"
+                    [config]="tab.config"
+                    [events_onDocumentReady]="onDocumentReady"
+                    [onLoadComponentError]="onLoadComponentError"
+                  ></document-editor>
+                </nz-tab>
+              </ng-container>
+            </nz-tabset>
+          </div></div>
+          <div nz-col class="gutter-row" [nzSpan]="6"><div class="inner-box">
+            <div class="list-document">
 
-  <nz-tab [nzTitle]="tc">
-    <ng-template #tc>
-      <nz-icon nzType="video-camera" />
-     Trình chiếu
-    </ng-template>
+              <nz-tabset nzType="card" nzCentered>
+                  <nz-tab [nzTitle]="vbch">
+                    <ng-template #vbch>
+                      <nz-icon nzType="copy" /> Văn bản
+                    </ng-template>
+                    <nz-list nzItemLayout="horizontal">
+                      <nz-list-item class="documents-item" (click)="newTab('Báo cáo tổng kết năm 2025.docx')">
+                        <nz-list-item-meta
+                          nzAvatar="img/word.png"
+                          nzDescription="Báo cáo tổng kết năm 2025.docx">
+                        </nz-list-item-meta>
+                      </nz-list-item>
 
-    <div #jitsiContainer id="jitsi-container" style="height: calc(100vh - 50px);padding: 4px 0 0 0px;"></div>
-  </nz-tab>
-</nz-tabset>
+                      <nz-list-item class="documents-item" (click)="newTab('Tài liệu hướng dẫn sử dụng phần mềm SMR.xlsx')">
+                        <nz-list-item-meta
+                          nzAvatar="img/excel.png"
+                          nzDescription="Tài liệu hướng dẫn sử dụng phần mềm SMR.xlsx">
+                        </nz-list-item-meta>
+                      </nz-list-item>
+
+                      <nz-list-item class="documents-item" (click)="newTab('Báo cáo tổng kết năm 2025.pdf')">
+                        <nz-list-item-meta
+                          nzAvatar="img/pdf.png"
+                          nzDescription="Báo cáo tổng kết năm 2025.pdf">
+                        </nz-list-item-meta>
+                      </nz-list-item>
+
+                      <nz-list-item class="documents-item" (click)="newTab('Các tài liệu liên quan đến cuộc họp.txt')">
+                        <nz-list-item-meta
+                          nzAvatar="img/documents.png"
+                          nzDescription="Các tài liệu liên quan đến cuộc họp.txt">
+                        </nz-list-item-meta>
+                      </nz-list-item>
+                    </nz-list>
+                  </nz-tab>
+                  <nz-tab [nzTitle]="Eoffice">
+                    <ng-template #Eoffice>
+                      <nz-icon nzType="code-sandbox" /> Eoffice
+                    </ng-template>
+
+
+                  </nz-tab>
+
+              </nz-tabset>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </nz-tab>
+
+    <!-- Tab Trình chiếu -->
+    <nz-tab [nzTitle]="tc">
+      <ng-template #tc>
+        <nz-icon nzType="video-camera" /> Trình chiếu
+      </ng-template>
+
+      <div
+        #jitsiContainer
+        id="jitsi-container"
+        style="height: calc(100vh - 54px); padding: 4px 0 0 0px;">
+      </div>
+    </nz-tab>
+
+    <nz-tab [nzTitle]="aihd">
+      <ng-template #aihd>
+        <nz-icon nzType="open-a-i" /> AI hỏi đáp
+      </ng-template>
+    </nz-tab>
+  </nz-tabset>
 </div>
