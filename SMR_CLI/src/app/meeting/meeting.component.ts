@@ -8,11 +8,14 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../service/global.service';
 import { ShareModule } from '../shared/share-module';
+import { DocumentEditorModule } from '@onlyoffice/document-editor-angular';
+import { IConfig } from '@onlyoffice/document-editor-angular';
 declare var JitsiMeetExternalAPI: any;
+
 
 @Component({
   selector: 'app-meeting',
-  imports: [ShareModule],
+  imports: [ShareModule,DocumentEditorModule],
   standalone: true,
   templateUrl: './meeting.component.html',
   styleUrl: './meeting.component.scss',
@@ -25,7 +28,10 @@ export class MeetingComponent implements AfterViewInit, OnDestroy {
   api: any;
   user: any = {};
   id: string | null = null;
+  
   isJitsiInitialized = false;
+ idramdom: string = Math.random().toString(36).substring(2, 15);
+ documentIdramdom: string = Math.random().toString(36).substring(2, 15);
 
   constructor(private route: ActivatedRoute, private gService: GlobalService) {
     this.user = this.gService.getUserInfo();
@@ -34,7 +40,25 @@ export class MeetingComponent implements AfterViewInit, OnDestroy {
       if (this.id) this.room = this.id;
     });
   }
-
+  config: IConfig = {
+    document: {
+      fileType: 'xlsx',
+      key: `${this.documentIdramdom}`,
+      title: 'Example Document Title.xlsx',
+      url: 'http://sso.d2s.com.vn:4455/Upload/08042025_171659_CSTMGG.xlsx',
+    },
+    documentType: 'cell',
+    editorConfig: {
+      mode: 'view', 
+      
+    },}
+    onDocumentReady(event: any) {
+      console.log('Document is ready:', event);
+    }
+  
+    onLoadComponentError(error: any) {
+      console.error('Error loading document editor:', error);
+    }
   ngAfterViewInit(): void {
     // Không gọi initializeJitsi ở đây nữa
   }
@@ -44,6 +68,7 @@ export class MeetingComponent implements AfterViewInit, OnDestroy {
       setTimeout(() => this.initializeJitsi(), 0);
     }
   }
+  
 
   initializeJitsi(): void {
     if (!this.jitsiContainer) {
@@ -69,6 +94,7 @@ export class MeetingComponent implements AfterViewInit, OnDestroy {
           'https://localhost:4008/Uploads/Images/2025/04/15/717c04af-29e6-4a7c-8d47-615dd9c946d2.jpg',
       },
     };
+    
 
     this.api = new JitsiMeetExternalAPI(this.domain, options);
     this.isJitsiInitialized = true;
@@ -82,6 +108,7 @@ export class MeetingComponent implements AfterViewInit, OnDestroy {
       console.log('Người dùng đã rời phòng');
     });
   }
+ 
 
   ngOnDestroy(): void {
     if (this.api) {

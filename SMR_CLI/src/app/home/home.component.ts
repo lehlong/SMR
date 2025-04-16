@@ -37,7 +37,8 @@ export class HomeComponent {
     }
     return null;
   }
-
+ 
+  
   onOpenMeeting(id: string) {
     this.router.navigate([`/meeting/${id}`]);
   }

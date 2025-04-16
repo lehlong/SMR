@@ -16,7 +16,17 @@
 
     <div style="padding: 0 12px;">
       <nz-tabset>
-        <nz-tab nzTitle="Tab 1">Content of Tab Pane 1</nz-tab>
+        <nz-tab nzTitle="Tab 1">
+         
+          <document-editor
+            (id)="idramdom"
+            documentServerUrl="http://sso.d2s.com.vn:1239"
+            [config]="config"
+            [events_onDocumentReady]="onDocumentReady"
+            [onLoadComponentError]="onLoadComponentError"
+          ></document-editor>
+           <div> dday la tab 1</div>
+        </nz-tab>
         <nz-tab nzTitle="Tab 2">Content of Tab Pane 2</nz-tab>
         <nz-tab nzTitle="Tab 3">Content of Tab Pane 3</nz-tab>
       </nz-tabset>
