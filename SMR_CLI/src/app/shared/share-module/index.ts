@@ -45,18 +45,22 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse'
 import { NzTimelineModule } from 'ng-zorro-antd/timeline'
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown'
 import { NzCardModule } from 'ng-zorro-antd/card'
+import { NzBadgeModule } from 'ng-zorro-antd/badge'
+import { NzCalendarModule } from 'ng-zorro-antd/calendar'
 
 @NgModule({
   providers: [{ provide: NZ_ICONS, useValue: [UserOutline, LockOutline] }],
   imports: [
     InputClearComponent,
     InputNumberComponent,
-    NzIconModule, 
+    NzIconModule,
     NzUploadModule
   ],
   declarations: [],
   exports: [
     CommonModule,
+    NzBadgeModule,
+    NzCalendarModule,
     NzCheckboxModule,
     NzInputModule,
     NzIconModule,

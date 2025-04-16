@@ -1,0 +1,35 @@
+<div style="background-color: white;">
+  <nz-tabset nzType="card" (nzSelectedIndexChange)="onTabChange($event)" nzCentered>
+  <nz-tab [nzTitle]="ttch">
+    <ng-template #ttch>
+      <nz-icon nzType="info-circle" />
+     Thông tin cuộc họp
+    </ng-template>
+
+  </nz-tab>
+
+  <nz-tab [nzTitle]="vb">
+    <ng-template #vb>
+      <nz-icon nzType="file" />
+     Văn bản
+    </ng-template>
+
+    <div style="padding: 0 12px;">
+      <nz-tabset>
+        <nz-tab nzTitle="Tab 1">Content of Tab Pane 1</nz-tab>
+        <nz-tab nzTitle="Tab 2">Content of Tab Pane 2</nz-tab>
+        <nz-tab nzTitle="Tab 3">Content of Tab Pane 3</nz-tab>
+      </nz-tabset>
+    </div>
+  </nz-tab>
+
+  <nz-tab [nzTitle]="tc">
+    <ng-template #tc>
+      <nz-icon nzType="video-camera" />
+     Trình chiếu
+    </ng-template>
+
+    <div #jitsiContainer id="jitsi-container" style="height: calc(100vh - 50px);padding: 4px 0 0 0px;"></div>
+  </nz-tab>
+</nz-tabset>
+</div>

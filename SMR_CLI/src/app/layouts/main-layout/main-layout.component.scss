@@ -1,3 +1,10 @@
+
+.ant-menu.ant-menu-inline-collapsed > .ant-menu-item, .ant-menu.ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item, .ant-menu.ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu.ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title {
+  left: 0;
+  padding: 0 calc(50% - 22px / 2);
+  text-overflow: clip;
+}
+
 .trigger {
     font-size: 18px;
     line-height: 64px;
@@ -10,6 +17,11 @@
     color: #1890ff;
 }
 
+:host ::ng-deep .icon-resize svg {
+  width: 20px;
+  height: 20px;
+}
+
 .logo {
     height: 32px;
     background: rgba(255, 255, 255, 0.2);
@@ -19,7 +31,7 @@
 nz-header {
     background: #fff;
     padding: 0;
-    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2)
 }
 
 nz-content {
@@ -29,15 +41,15 @@ nz-content {
 nz-breadcrumb {
     margin: 16px 0;
 }
-
-.inner-content {
-    padding: 24px;
-    background: white;
-    min-height: 360px;
-}
-
 nz-footer {
     text-align: center;
+}
+
+.slider-c{
+  display: flex
+;
+    justify-content: center;
+    flex-flow: column;
 }
 
 .ant-layout-sider {
@@ -47,7 +59,7 @@ nz-footer {
 }
 
 nz-content {
-    margin: 6px 0px 0px 6px !important;
+    margin: 0 !important;
 }
 
 .ant-menu {
@@ -59,8 +71,8 @@ nz-content {
 
 .inner-content {
     padding: 0 !important;
-    background: white;
-    height: calc(100vh - 70px) !important;
+    height: calc(100vh - 64px) !important;
+    margin: 0;
 }
 
 .ant-collapse-content {
@@ -78,8 +90,8 @@ nz-content {
     padding-right: 22px;
 }
 .user{
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     cursor: pointer;
     margin-left: auto;
 }
@@ -95,7 +107,7 @@ nz-content {
     align-items: center;
     justify-content: center;
   }
-  
+
   .circle img {
     height: 36px;
     width: auto;

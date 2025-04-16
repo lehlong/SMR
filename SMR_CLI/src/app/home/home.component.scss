@@ -1,0 +1,45 @@
+.ant-card-bordered {
+  border: 1px solid #f0f0f0;
+}
+
+.ant-card-bordered:hover {
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+}
+
+.home-page {
+  padding: 12px 6px;
+    height: 100vh;
+    overflow: auto;
+}
+.btn-green{
+  background: #28a745;
+  border-color: #28a745;
+}
+.grid {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.ant-list-split .ant-list-item {
+  cursor: pointer;
+}
+
+.meet-title{
+  word-break: break-all;
+    font-weight: 600;
+    margin: 0px 0px 4px 6px;
+}
+.sub-meet-title{
+  font-size: 14px;
+    color: gray;
+}
+.ant-list-item {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-flow: column;
+  padding: 4px 0px 12px 8px;
+  color: rgba(0, 0, 0, .85);
+}

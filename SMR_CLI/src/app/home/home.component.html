@@ -1,1 +1,141 @@
-<p>home works!</p>
+<div class="home-page">
+  <div nz-row [nzGutter]="12" class="grid">
+    <div nz-col [nzSpan]="8">
+      <nz-card [nzTitle]="meet1" style="margin-bottom: 12px;">
+        <ng-template #meet1>
+          <nz-icon nzType="video-camera" nzTheme="outline" />
+          CUỘC HỌP ĐANG DIỄN RA
+        </ng-template>
+        <nz-list nzItemLayout="horizontal">
+          <nz-list-item>
+            <div class="meet-title">Cuộc họp về việc triển khai phần mềm SMR</div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="user" nzTheme="outline" /> Người chủ trì: Lê Hải Long
+            </div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="clock-circle" nzTheme="outline" /> Thời gian: 16/04/2025 14:00
+            </div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="environment" nzTheme="outline" /> Địa điểm: Văn phòng D2S
+            </div>
+            <div style="margin: 6px 0 0 0;">
+              <button nz-button nzType="primary" class="btn-green" nzShape="round" nzSize="large" (click)="onOpenMeeting('234234234')">
+                <nz-icon nzType="video-camera" />
+                Tham gia ngay
+              </button>
+            </div>
+          </nz-list-item>
+
+          <nz-list-item>
+            <div class="meet-title">Cuộc họp về việc triển khai phần mềm SMR</div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="user" nzTheme="outline" /> Người chủ trì: Lê Hải Long
+            </div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="clock-circle" nzTheme="outline" /> Thời gian: 16/04/2025 14:00
+            </div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="environment" nzTheme="outline" /> Địa điểm: Văn phòng D2S
+            </div>
+            <div style="margin: 6px 0 0 0;">
+              <button nz-button nzType="primary" class="btn-green" nzShape="round" nzSize="large" (click)="onOpenMeeting('234234234')">
+                <nz-icon nzType="video-camera" />
+                Tham gia ngay
+              </button>
+            </div>
+          </nz-list-item>
+
+        </nz-list>
+      </nz-card>
+      <nz-card [nzTitle]="meet2">
+        <ng-template #meet2>
+          <nz-icon nzType="video-camera" nzTheme="outline" />
+          CUỘC HỌP GẦN ĐÂY
+        </ng-template>
+        <nz-list nzItemLayout="horizontal">
+          <nz-list-item>
+            <div class="meet-title">Cuộc họp về việc triển khai phần mềm SMR</div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="user" nzTheme="outline" /> Người chủ trì: Lê Hải Long
+            </div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="clock-circle" nzTheme="outline" /> Thời gian: 16/04/2025 14:00
+            </div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="environment" nzTheme="outline" /> Địa điểm: Văn phòng D2S
+            </div>
+            <div style="margin: 6px 0 0 0;">
+              <button nz-button nzType="primary" nzShape="round" nzSize="large" (click)="onOpenMeeting('234234234')">
+                <nz-icon nzType="menu" />
+                Chi tiết
+              </button>
+            </div>
+          </nz-list-item>
+
+          <nz-list-item>
+            <div class="meet-title">Cuộc họp về việc triển khai phần mềm SMR</div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="user" nzTheme="outline" /> Người chủ trì: Lê Hải Long
+            </div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="clock-circle" nzTheme="outline" /> Thời gian: 16/04/2025 14:00
+            </div>
+            <div class="sub-meet-title">
+              <nz-icon nzType="environment" nzTheme="outline" /> Địa điểm: Văn phòng D2S
+            </div>
+            <div style="margin: 6px 0 0 0;">
+              <button nz-button nzType="primary" nzShape="round" nzSize="large" (click)="onOpenMeeting('234234234')">
+                <nz-icon nzType="menu" />
+                Chi tiết
+              </button>
+            </div>
+          </nz-list-item>
+
+        </nz-list>
+      </nz-card>
+    </div>
+    <div nz-col [nzSpan]="16">
+      <nz-card [nzTitle]="meet3">
+        <ng-template #meet3>
+          <nz-icon nzType="video-camera" nzTheme="outline" />
+          CUỘC HỌP SẮP DIỄN RA
+        </ng-template>
+        <nz-calendar>
+          <ul *nzDateCell="let date" class="events">
+            @switch (date.getDate()) {
+            @case (8) {
+            @for (item of listDataMap.eight; track $index) {
+            <li>
+              <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
+            </li>
+            }
+            }
+            @case (10) {
+            @for (item of listDataMap.ten; track $index) {
+            <li>
+              <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
+            </li>
+            }
+            }
+            @case (11) {
+            @for (item of listDataMap.eleven; track $index) {
+            <li>
+              <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
+            </li>
+            }
+            }
+            }
+          </ul>
+          <ng-container *nzMonthCell="let month">
+            @if (getMonthData(month); as monthData) {
+            <div class="notes-month">
+              <section>{{ monthData }}</section>
+              <span>Backlog number</span>
+            </div>
+            }
+          </ng-container>
+        </nz-calendar>
+      </nz-card>
+    </div>
+  </div>
+</div>
