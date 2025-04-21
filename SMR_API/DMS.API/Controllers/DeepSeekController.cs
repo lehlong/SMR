@@ -12,10 +12,12 @@ namespace DMS.API.Controllers
     public class DeepSeekController : ControllerBase
     {
         private readonly HttpClient _httpClient;
-        private const string ApiKey = "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";
-        public DeepSeekController(HttpClient httpClient)
+
+        private readonly IConfiguration _configuration;
+        public DeepSeekController(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _configuration = configuration;
         }
 
         [HttpGet("ChatDeepSeek")]
@@ -33,7 +35,7 @@ namespace DMS.API.Controllers
                 max_tokens = 1000
             };
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _configuration["DeepSeekKey"]);
             _httpClient.DefaultRequestHeaders.Add("HTTP-Referer", "https://sso.d2s.com.vn");
             _httpClient.DefaultRequestHeaders.Add("X-Title", "SMR");
 
