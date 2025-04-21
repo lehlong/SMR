@@ -1,0 +1,67 @@
+.grid-header {
+  margin-top: 0px !important;
+  margin-right: 0px !important;
+  margin-bottom: 0px !important;
+  margin-left: 0px !important;
+}
+
+.card-sub-title-1 {
+  border-radius: 2px;
+  color: white;
+  background-color: #108ee9;
+  padding: 12px 20px !important;
+}
+
+.card-sub-title-2 {
+  border-radius: 2px;
+  color: white;
+  background-color: #6c757d;
+  padding: 12px 20px !important;
+  margin-left: 12px;
+}
+
+.card-sub-title-3 {
+  border-radius: 2px;
+  color: white;
+  background-color: #dc3545;
+  padding: 12px 20px !important;
+  margin-left: 12px;
+}
+
+.card-sub-title-4 {
+  border-radius: 2px;
+  color: white;
+  background-color: #28a745;
+  padding: 12px 20px !important;
+  margin-left: 12px;
+}
+.sub-title-small {
+  font-size: small;
+  margin-top: 6px;
+}
+
+.sub-title {
+  font-size: larger;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.ant-page-header-heading {
+  margin: 0px 16px 0px 0px;
+}
+
+.ant-card-grid {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+}
+
+[nz-card-grid] {
+  width: 50%;
+  text-align: center;
+}
+
+.icon-img {
+  width: 48px;
+}

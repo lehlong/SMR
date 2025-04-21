@@ -8,28 +8,34 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../service/global.service';
 import { ShareModule } from '../shared/share-module';
-import { DocumentEditorModule, IConfig } from '@onlyoffice/document-editor-angular';
+import {
+  DocumentEditorModule,
+  IConfig,
+} from '@onlyoffice/document-editor-angular';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { MainLayoutComponent } from '../layouts/main-layout/main-layout.component';
-import { DeepSeekService } from '../service/deepseek.service';
 import { MeetingService } from '../service/master-data/Meeting.service';
-import { ChatBotComponent } from "./chat-bot/chat-bot.component";
+import { ChatBotComponent } from './chat-bot/chat-bot.component';
+import { MeetingInfoComponent } from './meeting-info/meeting-info.component';
+import { DocumentComponent } from './document/document.component';
 
 declare var JitsiMeetExternalAPI: any;
 
 @Component({
   selector: 'app-meeting',
   standalone: true,
-  imports: [ShareModule, DocumentEditorModule, NzEmptyModule, ChatBotComponent],
+  imports: [
+    ShareModule,
+    NzEmptyModule,
+    ChatBotComponent,
+    MeetingInfoComponent,
+    DocumentComponent,
+  ],
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.scss'],
 })
-export class MeetingComponent implements OnDestroy, AfterViewChecked  {
-
+export class MeetingComponent implements OnDestroy, AfterViewChecked {
   selectedTabIndex = 0;
-
-
-
   @ViewChild('jitsiContainer') jitsiContainer!: ElementRef;
 
   domain: string = 'meet.xbot.vn';
@@ -42,13 +48,12 @@ export class MeetingComponent implements OnDestroy, AfterViewChecked  {
   isDocumentTabVisible = false;
   renderEditor = false;
 
-  idramdom: string = Math.random().toString(36).substring(2, 15);
-  documentIdramdom: string = Math.random().toString(36).substring(2, 15);
-
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     private gService: GlobalService,
-     private layout : MainLayoutComponent,
-     private service : MeetingService) {
+    private layout: MainLayoutComponent,
+    private service: MeetingService
+  ) {
     this.user = this.gService.getUserInfo();
     this.route.paramMap.subscribe((params) => {
       this.meetingId = params.get('id');
@@ -56,19 +61,6 @@ export class MeetingComponent implements OnDestroy, AfterViewChecked  {
     });
     layout.showMainSidebar = false;
   }
-
-  config: IConfig = {
-    document: {
-      fileType: 'xlsx',
-      key: `${this.documentIdramdom}`,
-      title: 'Example Document Title.xlsx',
-      url: 'http://sso.d2s.com.vn:4455/Upload/08042025_171659_CSTMGG.xlsx',
-    },
-    documentType: 'cell',
-    editorConfig: {
-      mode: 'view',
-    },
-  };
 
   ngAfterViewChecked() {
     this.scrollToBottom();
@@ -90,37 +82,6 @@ export class MeetingComponent implements OnDestroy, AfterViewChecked  {
     }
   }
   //#endregion
-
-  //#region Chatbot
-
-  inputChatbot: string = '';
-  chatAi : any[] = [];
-  onAskChatbot() {
-    this.chatAi.push({
-      role: 'User',
-      content: this.inputChatbot,
-    });
-    this.service.sendMessage(this.inputChatbot)
-    .subscribe({
-      next: (result) => {
-        result.content = result.content.replaceAll('**', '<br>');
-        this.chatAi.push(result)
-      },
-      error: (err) => {
-        console.error('API error:', err);
-      }
-    });
-    this.inputChatbot = '';
-  }
-  //#endregion
-
-  onDocumentReady(event: any) {
-    console.log('Document is ready:', event);
-  }
-
-  onLoadComponentError(error: any) {
-    console.error('Error loading document editor:', error);
-  }
 
   onTabChange(index: number): void {
     this.isDocumentTabVisible = index === 1;
@@ -178,59 +139,5 @@ export class MeetingComponent implements OnDestroy, AfterViewChecked  {
     if (this.api) {
       this.api.dispose();
     }
-  }
-
-  tabs: any[] = [];
-  selectedIndex = 0;
-
-  trackByTabId(index: number, tab: any): string {
-    return tab.id;
-  }
-
-  closeTab({ index }: { index: number }): void {
-    this.tabs.splice(index, 1);
-  }
-
-  newTab(fileName: string): void {
-    // Lấy phần mở rộng của tệp tin
-    const extension = fileName.split('.').pop()?.toLowerCase();
-
-    // Nếu extension là undefined, mặc định sử dụng 'word'
-    const typeMap: any = {
-      docx: 'word',
-      xlsx: 'cell',
-      pptx: 'slide',
-      pdf: 'word',
-      txt: 'word',
-    };
-
-    // Nếu extension là undefined, ta sử dụng 'word' làm mặc định
-    const fileType =
-      extension && typeMap[extension] ? typeMap[extension] : 'word';
-
-    // Tạo id mới cho tab
-    const newId = Math.random().toString(36).substring(2, 15);
-
-    // Tạo tab mới
-    const tab = {
-      title: fileName,
-      id: newId,
-      config: {
-        document: {
-          fileType: extension,
-          key: newId,
-          title: fileName,
-          url: `http://sso.d2s.com.vn:4455/Upload/08042025_171659_CSTMGG.xlsx`,
-        },
-        documentType: fileType,
-        editorConfig: {
-          mode: 'view',
-        },
-      },
-    };
-
-    // Thêm tab vào danh sách
-    this.tabs.push(tab);
-    this.selectedIndex = this.tabs.length - 1;
   }
 }

@@ -1,1 +1,182 @@
-<p>meeting-info works!</p>
+<nz-page-header nzTitle="Cuộc họp về việc triển khai phần mềm" [nzSubtitle]="subtt">
+  <ng-template #subtt>
+    <nz-tag nzColor="green">Đang diễn ra</nz-tag>
+    <nz-tag nzColor="default">Đã kết thúc</nz-tag>
+  </ng-template>
+  <nz-page-header-content>
+    <div nz-row [nzGutter]="16" class="grid-header">
+      <div nz-col class="gutter-row" [nzSpan]="4" class="card-sub-title-1">
+        <div class="inner-box">
+          <nz-icon class="icon-resize" nzType="user" nzTheme="outline" />
+          <div class="sub-title-small">Người chủ trì</div>
+          <div class="sub-title">Lê Hải Long</div>
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="4" class="card-sub-title-2">
+        <div class="inner-box">
+          <nz-icon class="icon-resize" nzType="clock-circle" nzTheme="outline" />
+          <div class="sub-title-small">Thời gian</div>
+          <div class="sub-title">16/04/2025 14:00</div>
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="4" class="card-sub-title-3">
+        <div class="inner-box">
+          <nz-icon class="icon-resize" nzType="usergroup-add" nzTheme="outline" />
+          <div class="sub-title-small">Số người tham gia</div>
+          <div class="sub-title">10</div>
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="8" class="card-sub-title-4">
+        <div class="inner-box">
+          <nz-icon class="icon-resize" nzType="environment" nzTheme="outline" />
+          <div class="sub-title-small">Địa điểm</div>
+          <div class="sub-title">Phòng họp công ty D2S</div>
+        </div>
+      </div>
+    </div>
+  </nz-page-header-content>
+  <nz-page-header-content style="margin-top: 12px;">
+
+    <div nz-row [nzGutter]="16" class="grid-header">
+      <div nz-col class="gutter-row" [nzSpan]="8" class="tb">
+        <div class="inner-box">
+          <nz-card nzTitle="THIẾT BỊ TRONG PHÒNG HỌP">
+
+            <div nz-card-grid>
+              <div>
+                <img src="img/television.png" class="icon-img" />
+              </div>
+              <div>
+                <div>Màn hình</div>
+                <div style="font-size: 14px; color: gray;">Số lượng : 32</div>
+                <div><nz-tag nzColor="success">Hoạt động</nz-tag></div>
+              </div>
+            </div>
+
+            <div nz-card-grid>
+              <div>
+                <img src="img/tablet.png" class="icon-img" />
+              </div>
+              <div>
+                <div>Máy tính bảng</div>
+                <div style="font-size: 14px; color: gray;">Số lượng : 32</div>
+                <div><nz-tag nzColor="success">Hoạt động</nz-tag></div>
+              </div>
+            </div>
+
+            <div nz-card-grid>
+              <div>
+                <img src="img/air-conditioner.png" class="icon-img" />
+              </div>
+              <div>
+                <div>Điều hoà</div>
+                <div style="font-size: 14px; color: gray;">Số lượng : 32</div>
+                <div><nz-tag nzColor="success">Hoạt động</nz-tag></div>
+              </div>
+            </div>
+
+            <div nz-card-grid>
+              <div>
+                <img src="img/energy.png" class="icon-img" />
+              </div>
+              <div>
+                <div>Ánh sáng</div>
+                <div style="font-size: 14px; color: gray;">Số lượng : 32</div>
+                <div><nz-tag nzColor="success">Hoạt động</nz-tag></div>
+              </div>
+            </div>
+
+            <div nz-card-grid>
+              <div>
+                <img src="img/sound.png" class="icon-img" />
+              </div>
+              <div>
+                <div>Âm thanh</div>
+                <div style="font-size: 14px; color: gray;">Số lượng : 32</div>
+                <div><nz-tag nzColor="success">Hoạt động</nz-tag></div>
+              </div>
+            </div>
+
+            <div nz-card-grid>
+              <div>
+                <img src="img/micro.png" class="icon-img" />
+              </div>
+              <div>
+                <div>Micro</div>
+                <div style="font-size: 14px; color: gray;">Số lượng : 32</div>
+                <div><nz-tag nzColor="success">Hoạt động</nz-tag></div>
+              </div>
+            </div>
+
+          </nz-card>
+        </div>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="8">
+        <div class="inner-box">
+          <nz-divider nzText="SƠ ĐỒ PHÒNG HỌP"></nz-divider>
+          <img src="img/room.jpg" style="width: 100%;" />
+        </div>
+      </div>
+
+      <div nz-col class="gutter-row" [nzSpan]="8">
+        <div class="inner-box">
+          <nz-table #basicTable [nzData]="[{}]">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Thành viên</th>
+                <th>Online</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Nguyễn Văn A</td>
+                <td><nz-tag nzColor="success">Online</nz-tag></td>
+                <td><nz-tag nzColor="success">Đã tham gia</nz-tag></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Nguyễn Văn A</td>
+                <td><nz-tag nzColor="success">Online</nz-tag></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Nguyễn Văn A</td>
+                <td><nz-tag nzColor="error">Offline</nz-tag></td>
+                <td><nz-tag nzColor="success">Đã tham gia</nz-tag></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Nguyễn Văn A</td>
+                <td><nz-tag nzColor="success">Online</nz-tag></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>Nguyễn Văn A</td>
+                <td><nz-tag nzColor="success">Online</nz-tag></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>Nguyễn Văn A</td>
+                <td><nz-tag nzColor="success">Online</nz-tag></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>Nguyễn Văn A</td>
+                <td><nz-tag nzColor="success">Online</nz-tag></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </div>
+    </div>
+
+  </nz-page-header-content>
+</nz-page-header>

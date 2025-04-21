@@ -1,0 +1,60 @@
+<div style="padding: 0 12px;height: calc(100vh - 48px);">
+  <div nz-row [nzGutter]="16">
+    <div nz-col class="gutter-row" [nzSpan]="18">
+      <div class="inner-box">
+        <nz-tabset [(nzSelectedIndex)]="selectedIndex" nzType="editable-card" (nzClose)="closeTab($event)"
+          nzHideAdd>
+          <ng-container *ngFor="let tab of tabs; trackBy: trackByTabId">
+            <nz-tab [nzClosable]="true" [nzTitle]="tab.title">
+              <document-editor [id]="tab.id" [documentServerUrl]="'http://sso.d2s.com.vn:1239'"
+                [config]="tab.config"></document-editor>
+            </nz-tab>
+          </ng-container>
+        </nz-tabset>
+      </div>
+    </div>
+    <div nz-col class="gutter-row" [nzSpan]="6">
+      <div class="inner-box">
+        <div class="list-document">
+
+          <nz-tabset nzType="card" nzCentered>
+            <nz-tab [nzTitle]="vbch">
+              <ng-template #vbch>
+                <nz-icon nzType="copy" /> Văn bản
+              </ng-template>
+              <nz-list nzItemLayout="horizontal">
+                <nz-list-item class="documents-item" (click)="openDocument('Báo cáo tổng kết năm 2025.docx')">
+                  <nz-list-item-meta nzAvatar="img/word.png" nzDescription="Báo cáo tổng kết năm 2025.docx">
+                  </nz-list-item-meta>
+                </nz-list-item>
+
+                <nz-list-item class="documents-item"
+                  (click)="openDocument('Tài liệu hướng dẫn sử dụng phần mềm SMR.xlsx')">
+                  <nz-list-item-meta nzAvatar="img/excel.png"
+                    nzDescription="Tài liệu hướng dẫn sử dụng phần mềm SMR.xlsx">
+                  </nz-list-item-meta>
+                </nz-list-item>
+
+                <nz-list-item class="documents-item" (click)="openDocument('Báo cáo tổng kết năm 2025.pdf')">
+                  <nz-list-item-meta nzAvatar="img/pdf.png" nzDescription="Báo cáo tổng kết năm 2025.pdf">
+                  </nz-list-item-meta>
+                </nz-list-item>
+
+                <nz-list-item class="documents-item" (click)="openDocument('Các tài liệu liên quan đến cuộc họp.txt')">
+                  <nz-list-item-meta nzAvatar="img/documents.png"
+                    nzDescription="Các tài liệu liên quan đến cuộc họp.txt">
+                  </nz-list-item-meta>
+                </nz-list-item>
+              </nz-list>
+            </nz-tab>
+            <nz-tab [nzTitle]="Eoffice">
+              <ng-template #Eoffice>
+                <nz-icon nzType="code-sandbox" /> Eoffice
+              </ng-template>
+            </nz-tab>
+          </nz-tabset>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
