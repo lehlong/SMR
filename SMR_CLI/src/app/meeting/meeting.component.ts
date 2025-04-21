@@ -13,24 +13,30 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { MainLayoutComponent } from '../layouts/main-layout/main-layout.component';
 import { DeepSeekService } from '../service/deepseek.service';
 import { MeetingService } from '../service/master-data/Meeting.service';
+import { ChatBotComponent } from "./chat-bot/chat-bot.component";
 
 declare var JitsiMeetExternalAPI: any;
 
 @Component({
   selector: 'app-meeting',
   standalone: true,
-  imports: [ShareModule, DocumentEditorModule, NzEmptyModule],
+  imports: [ShareModule, DocumentEditorModule, NzEmptyModule, ChatBotComponent],
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.scss'],
 })
 export class MeetingComponent implements OnDestroy, AfterViewChecked  {
+
+  selectedTabIndex = 0;
+
+
+
   @ViewChild('jitsiContainer') jitsiContainer!: ElementRef;
 
   domain: string = 'meet.xbot.vn';
   room: string = 'my-room';
   api: any;
   user: any = {};
-  id: string | null = null;
+  meetingId: string | null = '';
 
   isJitsiInitialized = false;
   isDocumentTabVisible = false;
@@ -45,8 +51,8 @@ export class MeetingComponent implements OnDestroy, AfterViewChecked  {
      private service : MeetingService) {
     this.user = this.gService.getUserInfo();
     this.route.paramMap.subscribe((params) => {
-      this.id = params.get('id');
-      if (this.id) this.room = this.id;
+      this.meetingId = params.get('id');
+      if (this.meetingId) this.room = this.meetingId;
     });
     layout.showMainSidebar = false;
   }

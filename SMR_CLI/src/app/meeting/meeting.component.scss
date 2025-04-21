@@ -231,39 +231,3 @@
   border-radius: 2px;
 }
 
-.chat-ai {
-  width: 50%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.chat-ai-content {
-  height: calc(100vh - 94px);
-  margin-left: 22px;
-  margin-right: 12px;
-  overflow-y: auto;
-  display: flex;
-  flex-flow: column;
-  padding-bottom: 22px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.chat-ai-title {
-  font-size: 24px;
-  font-weight: 600;
-  background: linear-gradient(90deg, #4facfe 0%, #FF66FF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.chat-ai-empty {
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-  gap: 14px;
-  padding: 6%;
-}

@@ -20,7 +20,7 @@
     </div>
   </div>
   <div class="meet-container">
-    <nz-tabset nzType="card" (nzSelectedIndexChange)="onTabChange($event)" nzCentered>
+    <nz-tabset nzType="card" [(nzSelectedIndex)]="selectedTabIndex" (nzSelectedIndexChange)="onTabChange($event)" nzCentered>
       <!-- Tab Thông tin -->
       <nz-tab [nzTitle]="ttch">
         <ng-template #ttch>
@@ -381,7 +381,8 @@
         <ng-template #aihd>
           <nz-icon nzType="open-a-i" /> AI hỏi đáp
         </ng-template>
-        <div class="chat-ai">
+        <app-chat-bot [meetingId]="meetingId" *ngIf="selectedTabIndex === 5"></app-chat-bot>
+        <!-- <div class="chat-ai">
           <div class="chat-ai-content" *ngIf="chatAi.length == 0">
             <div class="chat-ai-empty">
               <img src="img/chatbot.png" width="66" />
@@ -407,7 +408,7 @@
             </ng-template>
 
           </div>
-        </div>
+        </div> -->
       </nz-tab>
 
       <nz-tab [nzTitle]="dt">

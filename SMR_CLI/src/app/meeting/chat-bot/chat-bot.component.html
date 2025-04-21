@@ -1,0 +1,26 @@
+<div class="chat-ai">
+  <div class="chat-ai-content" *ngIf="chatAi.length == 0">
+    <div class="chat-ai-empty">
+      <img src="img/chatbot.png" width="66" />
+      <div class="chat-ai-title">Xin chào! Tôi có thể giúp gì cho bạn?</div>
+    </div>
+  </div>
+
+  <div #chatContent class="chat-ai-content" *ngIf="chatAi.length != 0">
+    @for (data of chatAi; track data) {
+    <div *ngIf="data.role == 'User'" class="message-item-right">{{data.content}}</div>
+    <div *ngIf="data.role == 'DeepSeek'" class="message-item-left" [innerHTML]="data.content"></div>
+    }
+
+  </div>
+  <div class="chat-ai-input">
+    <nz-input-group [nzSuffix]="suffixIconSearch">
+      <input type="text" nz-input placeholder="Hỏi bất cứ điều gì..." [(ngModel)]="inputChatbot"
+        (keydown.enter)="onAskChatbot()" />
+    </nz-input-group>
+    <ng-template #suffixIconSearch>
+      <nz-icon nzType="send" />
+    </ng-template>
+
+  </div>
+</div>
