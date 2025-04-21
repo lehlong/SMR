@@ -91,18 +91,18 @@ namespace DMS.API.Controllers.MD
             }
             return Ok(transferObject);
         }
-     
+
         [HttpPost("Insert")]
         public async Task<IActionResult> Insert([FromForm] string meeting, [FromForm] string meetingPeople, [FromForm] List<IFormFile> fileData)
         {
             var meetingObj = JsonConvert.DeserializeObject<MeetingDto>(meeting);
-           
+
             var meetingPeopleList = JsonConvert.DeserializeObject<List<MeetingPeopleDto>>(meetingPeople);
             var transferObject = new TransferObject();
             var result = await _service.Adddata(meetingObj, meetingPeopleList, fileData);
-         
 
-           
+
+
             if (_service.Status)
             {
                 //transferObject.Data = result;
@@ -118,14 +118,14 @@ namespace DMS.API.Controllers.MD
             }
             return Ok(transferObject);
         }
-      
+
 
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromForm] string meeting, [FromForm] string meetingPeople, [FromForm] List<IFormFile> fileData, [FromForm] string filelist)
         {
             var transferObject = new TransferObject();
             var meetingObj = JsonConvert.DeserializeObject<MeetingDto>(meeting);
-         
+
             var meetingPeopleList = JsonConvert.DeserializeObject<List<MeetingPeopleDto>>(meetingPeople);
             await _service.UpdateDB(meetingObj, meetingPeopleList, fileData, filelist);
 
@@ -162,6 +162,5 @@ namespace DMS.API.Controllers.MD
             }
             return Ok(transferObject);
         }
-        
     }
 }

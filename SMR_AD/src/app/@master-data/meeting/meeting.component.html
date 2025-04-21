@@ -28,10 +28,8 @@
             <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('meetingTitle', $event)">
               Tiêu đề cuộc họp
             </th>
-           
-           
             <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('meetingContent', $event)">
-              Nội dung cuộc họp 
+              Nội dung cuộc họp
             </th>
             <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('meetingAddress', $event)">
               Địa điểm
@@ -42,7 +40,7 @@
             <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('endDate', $event)">
               Thời gian kết thúc
             </th>
-            
+
             <th [nzSortFn]="true" (nzSortOrderChange)="onSortChange('isActive', $event)" nzAlign="center">
               Trạng thái
             </th>
@@ -62,8 +60,8 @@
             </td>
             <td>{{data.meetingContent}}</td>
             <td>{{data.meetingAddress}}</td>
-            <td>{{data.startDate}}</td>
-            <td>{{data.endDate}}</td>
+            <td>{{data.startDate | date:'dd/MM/yyyy hh:mm'}}</td>
+            <td>{{data.endDate | date:'dd/MM/yyyy hh:mm'}}</td>
             <td nzAlign="center">
               <nz-tag nzColor="success" *ngIf="data.isActive">
                 <nz-icon nzType="check-circle" />
@@ -86,7 +84,7 @@
       </div>
     </nz-page-header-content>
   </nz-page-header>
-  
+
   <!--Create Update-->
   <nz-drawer [nzMask]="false" nzWidth="60%" [nzVisible]="visible" nzPlacement="right" nzTitle="Tạo mới"
   [nzExtra]="extra" (nzOnClose)="closeDrawer()">
@@ -95,10 +93,10 @@
       <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="submitForm()">
         <app-input-clear placeholder="Nhập chủ đề cuộc họp" [required]="true" label="Chủ đề cuộc họp"
           [control]="$any(validateForm).controls['meetingTitle']">
-          
+
         </app-input-clear>
         <nz-form-item>
-          <nz-form-label>người chủ trì </nz-form-label>
+          <nz-form-label>Người chủ trì </nz-form-label>
           <nz-form-control nzErrorTip="Không được để trống">
             <nz-select
               nzShowSearch
@@ -116,7 +114,7 @@
               >
               </nz-option>
             </nz-select>
-            
+
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -138,7 +136,7 @@
               >
               </nz-option>
             </nz-select>
-            
+
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -160,10 +158,10 @@
               >
               </nz-option>
             </nz-select>
-            
+
           </nz-form-control>
         </nz-form-item>
-       
+
         <app-input-clear type="textarea" placeholder="Nhập nội dung cuộc họp" label="Nội dung cuộc họp"
           [control]="$any(validateForm).controls['meetingContent']">
         </app-input-clear>
@@ -172,7 +170,7 @@
     <nz-form-item>
       <nz-form-label>Thời gian bắt đầu</nz-form-label>
       <nz-form-control>
-        <nz-date-picker 
+        <nz-date-picker
           nzFormat="yyyy-MM-dd HH:mm"
           [nzShowTime]="{  nzFormat: 'HH:mm'}"
           formControlName ="startDate"
@@ -182,7 +180,7 @@
     <nz-form-item>
       <nz-form-label>Thời gian kết thúc</nz-form-label>
       <nz-form-control>
-        <nz-date-picker 
+        <nz-date-picker
           nzFormat="yyyy-MM-dd HH:mm"
           [nzShowTime]="{  nzFormat: 'HH:mm'}"
           formControlName ="endDate"
@@ -213,16 +211,16 @@
               <tr>
                 <th [nzChecked]="stat.checkAll" [nzIndeterminate]="stat.checkHalf"
                   (nzCheckedChange)="onItemSelectAll($event)"></th>
-                
+
                 <th>Tên Tài khoản</th>
-                
+
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of t.data" (click)="onItemSelect(data)">
                 <td [nzChecked]="!!data.checked" (nzCheckedChange)="onItemSelect(data)"></td>
                 <td>{{ data.userName }}</td>
-                
+
                 <td nzAlign="center">
                   <span [ngClass]="
                       data?.isActive ? '!text-green-500' : '!text-red-500'
@@ -246,15 +244,15 @@
         <tbody >
           <tr *ngFor="let data of listOfParticipants; let i = index">
             <td nzAlign="center"   >
-              <nz-select  
+              <nz-select
               [(ngModel)]="data.userName"
-                nzSize="large" 
-                style="width: 50%;" 
+                nzSize="large"
+                style="width: 50%;"
                 (ngModelChange)="changePosition($event)"
                >
-                <nz-option 
+                <nz-option
                   *ngFor="let item of selectedPosition"
-                  [nzValue]="item.userName" 
+                  [nzValue]="item.userName"
                   [nzLabel]="item.fullName">
                 </nz-option>
               </nz-select>
@@ -265,7 +263,7 @@
       </nz-table>
     </div>
     </nz-tab>
-    
+
     <nz-tab nzTitle="Tài liệu đính kèm">
       <label>Chọn file</label>
       <div class="main-upload">
@@ -287,7 +285,7 @@
             </button>
           </li>
         </ul>
-       
+
       </div>
       <div>
         <nz-page-header-content class="footer-content">
@@ -300,7 +298,7 @@
             </nz-pagination>
           </div>
         </nz-page-header-content>
-   
+
     </div>
       <input
         type="file"
@@ -310,10 +308,10 @@
         multiple
         style="display: none;"
         />
-    
+
     </nz-tab>
   </nz-tabset>
-  
+
 </nz-drawer>
   <ng-template #extra>
     <nz-space>
