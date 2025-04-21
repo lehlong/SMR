@@ -12,7 +12,7 @@ namespace DMS.API.Controllers
     public class DeepSeekController : ControllerBase
     {
         private readonly HttpClient _httpClient;
-        private const string ApiKey = "";
+        private const string ApiKey = "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";
         public DeepSeekController(HttpClient httpClient)
         {
             _httpClient = httpClient;

@@ -22,7 +22,7 @@ export class MeetingService {
   }
 
   sendMessage(params: any): Observable<any> {
-    return this.commonService.get(`DeepSeek/ChatDeepSeek?prompt=${params}`)
+    return this.commonService.get(`DeepSeek/ChatDeepSeek?prompt=${params}`, {}, false)
   }
 
   update(params: any): Observable<any> {

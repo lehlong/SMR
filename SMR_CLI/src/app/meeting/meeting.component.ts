@@ -18,6 +18,7 @@ import { MeetingService } from '../service/master-data/Meeting.service';
 import { ChatBotComponent } from './chat-bot/chat-bot.component';
 import { MeetingInfoComponent } from './meeting-info/meeting-info.component';
 import { DocumentComponent } from './document/document.component';
+import { ResourceComponent } from "./resource/resource.component";
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -30,23 +31,19 @@ declare var JitsiMeetExternalAPI: any;
     ChatBotComponent,
     MeetingInfoComponent,
     DocumentComponent,
-  ],
+    ResourceComponent
+],
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.scss'],
 })
-export class MeetingComponent implements OnDestroy, AfterViewChecked {
+export class MeetingComponent implements OnDestroy {
   selectedTabIndex = 0;
   @ViewChild('jitsiContainer') jitsiContainer!: ElementRef;
-
   domain: string = 'meet.xbot.vn';
-  room: string = 'my-room';
   api: any;
   user: any = {};
   meetingId: string | null = '';
-
   isJitsiInitialized = false;
-  isDocumentTabVisible = false;
-  renderEditor = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -57,41 +54,11 @@ export class MeetingComponent implements OnDestroy, AfterViewChecked {
     this.user = this.gService.getUserInfo();
     this.route.paramMap.subscribe((params) => {
       this.meetingId = params.get('id');
-      if (this.meetingId) this.room = this.meetingId;
     });
     layout.showMainSidebar = false;
   }
 
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
-
-  //#region Tab Thành viên
-  selectedMessage: number | null = null;
-  selectMessage(index: number): void {
-    this.selectedMessage = index;
-  }
-  @ViewChild('chatContent') private chatContent!: ElementRef;
-
-  scrollToBottom(): void {
-    try {
-      this.chatContent.nativeElement.scrollTop =
-        this.chatContent.nativeElement.scrollHeight;
-    } catch (err) {
-      console.error('Scroll error', err);
-    }
-  }
-  //#endregion
-
   onTabChange(index: number): void {
-    this.isDocumentTabVisible = index === 1;
-
-    if (this.isDocumentTabVisible && !this.renderEditor) {
-      setTimeout(() => {
-        this.renderEditor = true;
-      }, 100); // delay nhỏ để đảm bảo DOM đã sẵn sàng
-    }
-
     if (index === 4 && !this.isJitsiInitialized) {
       setTimeout(() => this.initializeJitsi(), 0);
     }
@@ -104,7 +71,7 @@ export class MeetingComponent implements OnDestroy, AfterViewChecked {
     }
 
     const options = {
-      roomName: this.room,
+      roomName: 'Tên cuộc họp',
       width: '100%',
       parentNode: this.jitsiContainer.nativeElement,
       configOverwrite: {
@@ -117,8 +84,6 @@ export class MeetingComponent implements OnDestroy, AfterViewChecked {
       },
       userInfo: {
         displayName: this.user.fullName,
-        avatarURL:
-          'https://localhost:4008/Uploads/Images/2025/04/15/717c04af-29e6-4a7c-8d47-615dd9c946d2.jpg',
       },
     };
 

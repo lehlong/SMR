@@ -20,95 +20,19 @@
     </div>
   </div>
   <div class="meet-container">
-    <nz-tabset nzType="card" [(nzSelectedIndex)]="selectedTabIndex" nzCentered>
+    <nz-tabset nzType="card" [(nzSelectedIndex)]="selectedTabIndex" (nzSelectedIndexChange)="onTabChange($event)" nzCentered>
       <nz-tab [nzTitle]="ttch">
         <ng-template #ttch>
           <nz-icon nzType="info-circle" /> Thông tin cuộc họp
         </ng-template>
-        <app-meeting-info [meetingId]="meetingId" *ngIf="selectedTabIndex === 0"></app-meeting-info>
+        <app-meeting-info [meetingId]="meetingId"></app-meeting-info>
       </nz-tab>
 
       <nz-tab [nzTitle]="tv">
         <ng-template #tv>
           <nz-icon nzType="usergroup-add" /> Thành viên
         </ng-template>
-
-        <div nz-row [nzGutter]="16" class="grid-header">
-          <div nz-col class="gutter-row p-0" [nzSpan]="6">
-            <div class="inner-box">
-              <div class="list-user-chat">
-                <div class="item-user-chat" *ngFor="let i of [1,2,3,4,5,6]  let idx = index"
-                [class.active]="selectedMessage === idx"
-                (click)="selectMessage(idx)">
-                  <div>
-                    <nz-badge nzDot>
-                      <nz-avatar nzIcon="user"></nz-avatar>
-                    </nz-badge>
-                  </div>
-                  <div>
-                    <div>Lê Hải Long</div>
-                    <div class="last-message">Tin nhắn xem trước</div>
-                  </div>
-                  <div style="margin-left: auto;">
-                    <nz-icon nzType="audio" nzTheme="outline" />
-
-                  </div>
-                  <div>
-                    <nz-icon nzType="sound" nzTheme="outline" />
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-          <div nz-col class="gutter-row p-0" [nzSpan]="14">
-            <div class="inner-box">
-              <div class="chat-box">
-                <div class="chat-header">
-                  <nz-avatar nzIcon="user"></nz-avatar>
-                  <div class="chat-header-title">Lê Hải Long</div>
-                </div>
-                <div #chatContent class="chat-content">
-                  <div class="message-item-right">Tin nhắn của bạn</div>
-                  <div class="message-item-left">Tin nhắn của người khác</div>
-                  <div class="message-item-right">Tin nhắn của bạn ljkwerh lkwer hkwe rklwerhlsadf j'la;dsjrf q[wper qow'eri qoweri q;we </div>
-                  <div class="message-item-left">Tin nhắn của ngườrei kháciower woeiru ow erouw er ower uypw erpow erpwe rpoiwery ipwer pwier ipuweyr iuweyr</div>
-                  <div class="message-item-right">Tin nhắn của bạn</div>
-                  <div class="message-item-left">Tin nhắn của người khác</div>
-                  <div class="message-item-right">Tin nhắn của bạn</div>
-                  <div class="message-item-left">Tin nhắn của người kwerwerhác</div>
-                  <div class="message-item-right">Tin nhắn của bạn</div>
-                  <div class="message-item-left">Tin nhắn của người khác</div>
-                  <div class="message-item-right">Tin nhắn của bạn</div>
-                  <div class="message-item-left">Tin nhắn của người khác</div>
-                  <div class="message-item-right">Tin nhắn của bạn</div>
-                  <div class="message-item-left">Tin nhắn của người khác</div>
-                  <div class="message-item-right">Tin nhắn của bạn</div>
-                  <div class="message-item-left">Tin nhắn của người khác</div>
-                  <div class="message-item-right">Tin nhắn của bạn</div>
-                  <div class="message-item-left">Tin nhắn của người khác</div>
-                </div>
-                <div class="chat-input">
-                  <nz-input-group [nzSuffix]="suffixIconSearch">
-                    <input type="text" nz-input placeholder="Nhập tin nhắn..." />
-                  </nz-input-group>
-                  <ng-template #suffixIconSearch>
-                    <nz-icon nzType="send" />
-                  </ng-template>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-          <div nz-col class="gutter-row" [nzSpan]="4">
-            <div class="inner-box">
-              <div class="user-control">
-
-              </div>
-            </div>
-          </div>
-        </div>
+        <app-resource [meetingId]="meetingId"></app-resource>
       </nz-tab>
 
       <nz-tab [nzTitle]="bq">
@@ -117,20 +41,17 @@
         </ng-template>
       </nz-tab>
 
-      <!-- Tab Văn bản -->
       <nz-tab [nzTitle]="vb">
         <ng-template #vb>
           <nz-icon nzType="file" /> Văn bản
         </ng-template>
-        <app-document [meetingId]="meetingId" *ngIf="selectedTabIndex === 3"></app-document>
+        <app-document [meetingId]="meetingId"></app-document>
       </nz-tab>
 
-      <!-- Tab Trình chiếu -->
       <nz-tab [nzTitle]="tc">
         <ng-template #tc>
           <nz-icon nzType="video-camera" /> Trình chiếu
         </ng-template>
-
         <div #jitsiContainer id="jitsi-container" style="height: calc(100vh - 54px); padding: 4px 0 0 0px;">
         </div>
       </nz-tab>
@@ -139,34 +60,7 @@
         <ng-template #aihd>
           <nz-icon nzType="open-a-i" /> AI hỏi đáp
         </ng-template>
-        <app-chat-bot [meetingId]="meetingId" *ngIf="selectedTabIndex === 5"></app-chat-bot>
-        <!-- <div class="chat-ai">
-          <div class="chat-ai-content" *ngIf="chatAi.length == 0">
-            <div class="chat-ai-empty">
-              <img src="img/chatbot.png" width="66" />
-              <div class="chat-ai-title">Xin chào! Tôi có thể giúp gì cho bạn?</div>
-            </div>
-          </div>
-
-
-          <div #chatContent class="chat-ai-content" *ngIf="chatAi.length != 0">
-            @for (data of chatAi; track data) {
-            <div *ngIf="data.role == 'User'" class="message-item-right">{{data.content}}</div>
-            <div *ngIf="data.role == 'DeepSeek'" class="message-item-left" [innerHTML]="data.content"></div>
-            }
-
-          </div>
-          <div class="chat-ai-input">
-            <nz-input-group [nzSuffix]="suffixIconSearch">
-              <input type="text" nz-input placeholder="Hỏi bất cứ điều gì..." [(ngModel)]="inputChatbot"
-                (keydown.enter)="onAskChatbot()" />
-            </nz-input-group>
-            <ng-template #suffixIconSearch>
-              <nz-icon nzType="send" />
-            </ng-template>
-
-          </div>
-        </div> -->
+        <app-chat-bot [meetingId]="meetingId"></app-chat-bot>
       </nz-tab>
 
       <nz-tab [nzTitle]="dt">

@@ -1,0 +1,76 @@
+<div nz-row [nzGutter]="16" class="grid-header-resource">
+  <div nz-col class="gutter-row p-0" [nzSpan]="6">
+    <div class="inner-box">
+      <div class="list-user-chat">
+        <div class="item-user-chat" *ngFor="let i of [1,2,3,4,5,6]  let idx = index"
+        [class.active]="selectedMessage === idx"
+        (click)="selectMessage(idx)">
+          <div>
+            <nz-badge nzDot>
+              <nz-avatar nzIcon="user"></nz-avatar>
+            </nz-badge>
+          </div>
+          <div>
+            <div>Lê Hải Long</div>
+            <div class="last-message">Tin nhắn xem trước</div>
+          </div>
+          <div style="margin-left: auto;">
+            <nz-icon nzType="audio" nzTheme="outline" />
+
+          </div>
+          <div>
+            <nz-icon nzType="sound" nzTheme="outline" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div nz-col class="gutter-row p-0" [nzSpan]="14">
+    <div class="inner-box">
+      <div class="chat-box">
+        <div class="chat-header">
+          <nz-avatar nzIcon="user"></nz-avatar>
+          <div class="chat-header-title">Lê Hải Long</div>
+        </div>
+        <div #chatContent class="chat-content">
+          <div class="message-item-right">Tin nhắn của bạn</div>
+          <div class="message-item-left">Tin nhắn của người khác</div>
+          <div class="message-item-right">Tin nhắn của bạn ljkwerh lkwer hkwe rklwerhlsadf j'la;dsjrf q[wper qow'eri qoweri q;we </div>
+          <div class="message-item-left">Tin nhắn của ngườrei kháciower woeiru ow erouw er ower uypw erpow erpwe rpoiwery ipwer pwier ipuweyr iuweyr</div>
+          <div class="message-item-right">Tin nhắn của bạn</div>
+          <div class="message-item-left">Tin nhắn của người khác</div>
+          <div class="message-item-right">Tin nhắn của bạn</div>
+          <div class="message-item-left">Tin nhắn của người kwerwerhác</div>
+          <div class="message-item-right">Tin nhắn của bạn</div>
+          <div class="message-item-left">Tin nhắn của người khác</div>
+          <div class="message-item-right">Tin nhắn của bạn</div>
+          <div class="message-item-left">Tin nhắn của người khác</div>
+          <div class="message-item-right">Tin nhắn của bạn</div>
+          <div class="message-item-left">Tin nhắn của người khác</div>
+          <div class="message-item-right">Tin nhắn của bạn</div>
+          <div class="message-item-left">Tin nhắn của người khác</div>
+          <div class="message-item-right">Tin nhắn của bạn</div>
+          <div class="message-item-left">Tin nhắn của người khác</div>
+        </div>
+        <div class="chat-input">
+          <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input type="text" nz-input placeholder="Nhập tin nhắn..." />
+          </nz-input-group>
+          <ng-template #suffixIconSearch>
+            <nz-icon nzType="send" />
+          </ng-template>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <div nz-col class="gutter-row" [nzSpan]="4">
+    <div class="inner-box">
+      <div class="user-control">
+
+      </div>
+    </div>
+  </div>
+</div>
