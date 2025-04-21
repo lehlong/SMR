@@ -9,7 +9,7 @@ export class MeetingService {
   constructor(private commonService: CommonService) { }
 
   search(params: any): Observable<any> {
-    
+
     return this.commonService.get('Meeting/Search', params)
   }
 
@@ -21,8 +21,12 @@ export class MeetingService {
     return this.commonService.post('Meeting/Insert', params)
   }
 
+  sendMessage(params: any): Observable<any> {
+    return this.commonService.get(`DeepSeek/ChatDeepSeek?prompt=${params}`)
+  }
+
   update(params: any): Observable<any> {
-  
+
     return this.commonService.put('Meeting/Update', params)
   }
 

@@ -31,7 +31,7 @@ import { environment } from '../../../environments/environment';
   animations:[]
 })
 export class MainLayoutComponent implements OnInit {
-
+  showMainSidebar: boolean = true;
   isCollapsed: boolean = true;
   loading: boolean = false
   user: any = {}

@@ -1,6 +1,6 @@
 <div class="home-page">
   <div nz-row [nzGutter]="12" class="grid">
-    <div nz-col [nzSpan]="8">
+    <div nz-col [nzSpan]="10">
       <nz-card [nzTitle]="meet1" style="margin-bottom: 12px;">
         <ng-template #meet1>
           <nz-icon nzType="video-camera" nzTheme="outline" />
@@ -19,7 +19,7 @@
               <nz-icon nzType="environment" nzTheme="outline" /> Địa điểm: Văn phòng D2S
             </div>
             <div style="margin: 6px 0 0 0;">
-              <button nz-button nzType="primary" class="btn-green" nzShape="round" nzSize="large" (click)="onOpenMeeting('234234234')">
+              <button nz-button nzType="primary" class="btn-green" nzShape="round" nzSize="large" (click)="onOpenMeeting('SMR')">
                 <nz-icon nzType="video-camera" />
                 Tham gia ngay
               </button>
@@ -38,7 +38,7 @@
               <nz-icon nzType="environment" nzTheme="outline" /> Địa điểm: Văn phòng D2S
             </div>
             <div style="margin: 6px 0 0 0;">
-              <button nz-button nzType="primary" class="btn-green" nzShape="round" nzSize="large" (click)="onOpenMeeting('234234234')">
+              <button nz-button nzType="primary" class="btn-green" nzShape="round" nzSize="large" (click)="onOpenMeeting('SMR')">
                 <nz-icon nzType="video-camera" />
                 Tham gia ngay
               </button>
@@ -65,7 +65,7 @@
               <nz-icon nzType="environment" nzTheme="outline" /> Địa điểm: Văn phòng D2S
             </div>
             <div style="margin: 6px 0 0 0;">
-              <button nz-button nzType="primary" nzShape="round" nzSize="large" (click)="onOpenMeeting('234234234')">
+              <button nz-button nzType="primary" nzShape="round" nzSize="large" (click)="onOpenMeeting('SMR')">
                 <nz-icon nzType="menu" />
                 Chi tiết
               </button>
@@ -84,7 +84,7 @@
               <nz-icon nzType="environment" nzTheme="outline" /> Địa điểm: Văn phòng D2S
             </div>
             <div style="margin: 6px 0 0 0;">
-              <button nz-button nzType="primary" nzShape="round" nzSize="large" (click)="onOpenMeeting('234234234')">
+              <button nz-button nzType="primary" nzShape="round" nzSize="large" (click)="onOpenMeeting('SMR')">
                 <nz-icon nzType="menu" />
                 Chi tiết
               </button>
@@ -94,38 +94,14 @@
         </nz-list>
       </nz-card>
     </div>
-    <div nz-col [nzSpan]="16">
+    <div nz-col [nzSpan]="14">
       <nz-card [nzTitle]="meet3">
         <ng-template #meet3>
           <nz-icon nzType="video-camera" nzTheme="outline" />
           CUỘC HỌP SẮP DIỄN RA
         </ng-template>
         <nz-calendar>
-          <ul *nzDateCell="let date" class="events">
-            @switch (date.getDate()) {
-            @case (8) {
-            @for (item of listDataMap.eight; track $index) {
-            <li>
-              <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
-            </li>
-            }
-            }
-            @case (10) {
-            @for (item of listDataMap.ten; track $index) {
-            <li>
-              <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
-            </li>
-            }
-            }
-            @case (11) {
-            @for (item of listDataMap.eleven; track $index) {
-            <li>
-              <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
-            </li>
-            }
-            }
-            }
-          </ul>
+
           <ng-container *nzMonthCell="let month">
             @if (getMonthData(month); as monthData) {
             <div class="notes-month">

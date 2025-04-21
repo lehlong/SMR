@@ -1,6 +1,5 @@
 <nz-layout>
-
-  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" [nzWidth]="'240px'">
+  <nz-sider *ngIf="showMainSidebar" nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" [nzWidth]="'240px'">
     <ul nz-menu nzTheme="light" nzMode="inline" class="slider-c">
       <li nz-menu-item style="padding-left: 22px;">
         <div class="user">
@@ -25,25 +24,11 @@
         <nz-icon class="icon-resize" nzType="setting" nzTheme="outline" />
       </li>
       <li nz-menu-item (click)="logOut()">
-        <nz-icon class="icon-resize" nzType="logout" nzTheme="outline" style="color: #dc3545;"/>
+        <nz-icon class="icon-resize" nzType="logout" nzTheme="outline" style="color: #dc3545;" />
       </li>
     </ul>
   </nz-sider>
   <nz-layout>
-    <!-- <nz-header>
-            <div nz-dropdown [nzDropdownMenu]="dropdownUser" class="user">
-                <div class="circle">
-                    <img [src]="userAvatar" alt="Avatar User">
-                </div>
-                <div class="full-name">{{user.fullName}}</div>
-            </div>
-            <nz-dropdown-menu #dropdownUser="nzDropdownMenu">
-                <ul nz-menu nzSelectable>
-                    <li nz-menu-item (click)="changePass()"><nz-icon nzType="lock" nzTheme="outline" /> Đổi mật khẩu</li>
-                    <li nz-menu-item (click)="logOut()"><nz-icon nzType="login" nzTheme="outline" /> Đăng xuất</li>
-                </ul>
-            </nz-dropdown-menu>
-        </nz-header> -->
     <nz-content>
       <div class="inner-content">
         <nz-spin [nzSpinning]="loading">

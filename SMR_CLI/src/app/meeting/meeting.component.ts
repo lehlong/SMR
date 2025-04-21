@@ -3,22 +3,27 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
+  AfterViewChecked,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../service/global.service';
 import { ShareModule } from '../shared/share-module';
 import { DocumentEditorModule, IConfig } from '@onlyoffice/document-editor-angular';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { MainLayoutComponent } from '../layouts/main-layout/main-layout.component';
+import { DeepSeekService } from '../service/deepseek.service';
+import { MeetingService } from '../service/master-data/Meeting.service';
 
 declare var JitsiMeetExternalAPI: any;
 
 @Component({
   selector: 'app-meeting',
   standalone: true,
-  imports: [ShareModule, DocumentEditorModule],
+  imports: [ShareModule, DocumentEditorModule, NzEmptyModule],
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.scss'],
 })
-export class MeetingComponent implements OnDestroy {
+export class MeetingComponent implements OnDestroy, AfterViewChecked  {
   @ViewChild('jitsiContainer') jitsiContainer!: ElementRef;
 
   domain: string = 'meet.xbot.vn';
@@ -34,12 +39,16 @@ export class MeetingComponent implements OnDestroy {
   idramdom: string = Math.random().toString(36).substring(2, 15);
   documentIdramdom: string = Math.random().toString(36).substring(2, 15);
 
-  constructor(private route: ActivatedRoute, private gService: GlobalService) {
+  constructor(private route: ActivatedRoute,
+    private gService: GlobalService,
+     private layout : MainLayoutComponent,
+     private service : MeetingService) {
     this.user = this.gService.getUserInfo();
     this.route.paramMap.subscribe((params) => {
       this.id = params.get('id');
       if (this.id) this.room = this.id;
     });
+    layout.showMainSidebar = false;
   }
 
   config: IConfig = {
@@ -54,6 +63,50 @@ export class MeetingComponent implements OnDestroy {
       mode: 'view',
     },
   };
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  //#region Tab Thành viên
+  selectedMessage: number | null = null;
+  selectMessage(index: number): void {
+    this.selectedMessage = index;
+  }
+  @ViewChild('chatContent') private chatContent!: ElementRef;
+
+  scrollToBottom(): void {
+    try {
+      this.chatContent.nativeElement.scrollTop =
+        this.chatContent.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Scroll error', err);
+    }
+  }
+  //#endregion
+
+  //#region Chatbot
+
+  inputChatbot: string = '';
+  chatAi : any[] = [];
+  onAskChatbot() {
+    this.chatAi.push({
+      role: 'User',
+      content: this.inputChatbot,
+    });
+    this.service.sendMessage(this.inputChatbot)
+    .subscribe({
+      next: (result) => {
+        result.content = result.content.replaceAll('**', '<br>');
+        this.chatAi.push(result)
+      },
+      error: (err) => {
+        console.error('API error:', err);
+      }
+    });
+    this.inputChatbot = '';
+  }
+  //#endregion
 
   onDocumentReady(event: any) {
     console.log('Document is ready:', event);
@@ -72,7 +125,7 @@ export class MeetingComponent implements OnDestroy {
       }, 100); // delay nhỏ để đảm bảo DOM đã sẵn sàng
     }
 
-    if (index === 2 && !this.isJitsiInitialized) {
+    if (index === 4 && !this.isJitsiInitialized) {
       setTimeout(() => this.initializeJitsi(), 0);
     }
   }
@@ -146,7 +199,8 @@ export class MeetingComponent implements OnDestroy {
     };
 
     // Nếu extension là undefined, ta sử dụng 'word' làm mặc định
-    const fileType = extension && typeMap[extension] ? typeMap[extension] : 'word';
+    const fileType =
+      extension && typeMap[extension] ? typeMap[extension] : 'word';
 
     // Tạo id mới cho tab
     const newId = Math.random().toString(36).substring(2, 15);
@@ -160,7 +214,7 @@ export class MeetingComponent implements OnDestroy {
           fileType: extension,
           key: newId,
           title: fileName,
-          url: `http://sso.d2s.com.vn:4455/Upload/${fileName}`,
+          url: `http://sso.d2s.com.vn:4455/Upload/08042025_171659_CSTMGG.xlsx`,
         },
         documentType: fileType,
         editorConfig: {

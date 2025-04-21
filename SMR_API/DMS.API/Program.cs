@@ -39,6 +39,7 @@ builder.Services.AddControllers();
 builder.Services.AddDIServices(builder.Configuration);
 //builder.Services.AddDIXHTDServices(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMvc();
 builder.Services.AddSwaggerGen(options =>
