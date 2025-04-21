@@ -368,13 +368,7 @@ export class AccountEditComponent {
     )
     if (this.validateForm.valid) {
       const formValue = this.validateForm.value
-      // const { partnerId, ...rest } = formValue
-      // let insertObj = {}
-      // if (this.isShowSelectPartner) {
-      //   insertObj = formValue
-      // } else {
-      //   insertObj = rest
-      // }
+      
       if(this.avatarBase64 != '' && this.isBase64Image(this.avatarBase64)){
         formValue.imageBase64 = this.avatarBase64
       }

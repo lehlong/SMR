@@ -18,15 +18,20 @@ namespace DMS.BUSINESS.Dtos.MD
         [Key]
         [Description("Id")]
   
-        public Guid? Id { get; set; }
+        public Guid? id { get; set; }
 
         [Description("Nội dung cuộc họp")]
-        public string? MeetingTitle { get; set; }
-        
-        [Description("Người chủ trì")]
-        public string? ChairPerson { get; set; }
-        [Description("thời gian")]
-        public DateTime Time { get; set; }
+        public string? meetingContent { get; set; }
+        [Description("Tiêu đề bắt đầu ")]
+        public string? meetingTitle { get; set; }
+        [Description("Địa điểm cuộc họp ")]
+
+        public string? MeetingRoomid { get; set; }
+
+        [Description("thời gian bắt đầu ")]
+        public DateTime startDate { get; set; }
+        [Description("thời gian kết thúc ")]
+        public DateTime endDate { get; set; }
 
         [Description("Trạng thái")]
         public string State { get => this.IsActive == true ? "Đang hoạt động" : "Khóa"; }

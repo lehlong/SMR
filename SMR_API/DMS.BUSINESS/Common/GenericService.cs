@@ -256,7 +256,7 @@ namespace DMS.BUSINESS.Common
                     PageSize = filter.PageSize
                 };
                 pagedResponseDto.TotalPage = Convert.ToInt32(Math.Ceiling((double)pagedResponseDto.TotalRecord / (double)pagedResponseDto.PageSize));
-                var result = query.Skip((filter.CurrentPage - 1) * filter.PageSize).Take(filter.PageSize).ToList();
+                    var result = query.Skip((filter.CurrentPage - 1) * filter.PageSize).Take(filter.PageSize).ToList();
                 pagedResponseDto.Data = _mapper.Map<List<TDto>>(result);
                 return pagedResponseDto;
             }

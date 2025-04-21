@@ -435,8 +435,8 @@ namespace DMS.BUSINESS.Services.AD
             var user = _dbContext.TblAdAccount.Find(username);
 
             string fullImagePath = Path.GetFullPath(
-      Path.Combine(AppDomain.CurrentDomain.BaseDirectory, user.UrlImage.TrimStart('/', '\\'))
-  );
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, user.UrlImage.TrimStart('/', '\\'))
+                                    );
             if (!File.Exists(fullImagePath))
                 throw new FileNotFoundException("Không tìm thấy ảnh: " + fullImagePath);
 

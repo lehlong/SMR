@@ -7,7 +7,7 @@ import UnauthGuard from './guards/unauth.guard';
 import { LoginComponent } from './auth/login/login.component';
 import { NotFoundComponent } from './layouts/not-found/not-found.component';
 import { systemManagerRoutes } from './@system-manager/system-manager.routes';
-import { masterDataRoutes } from './@master-data/account-type/master-data.routes';
+import { masterDataRoutes } from './@master-data/master-data.routes';
 
 export const routes: Routes = [
   {
@@ -27,6 +27,9 @@ export const routes: Routes = [
       {path: 'login', component: LoginComponent, canActivate: [UnauthGuard]},
     ],
   },
+
+  // { path: 'meeting', component:  },
+  
   { path: '**', component: NotFoundComponent },
 ];
 

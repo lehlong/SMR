@@ -20,6 +20,8 @@ export class AccountTypeComponent {
   visible: boolean = false
   edit: boolean = false
   filter = new AccountTypeFilter()
+  
+  
   paginationResult = new PaginationResult()
   loading: boolean = false
  

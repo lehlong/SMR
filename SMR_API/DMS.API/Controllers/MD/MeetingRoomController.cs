@@ -10,9 +10,9 @@ namespace DMS.API.Controllers.MD
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountTypeController(IAccountTypeService service) : ControllerBase
+    public class MeetingRoomController(IMeetingRoomService service) : ControllerBase
     {
-        public readonly IAccountTypeService _service = service;
+        public readonly IMeetingRoomService _service = service;
 
         [HttpGet("Search")]
         public async Task<IActionResult> Search([FromQuery] BaseFilter filter)
@@ -49,7 +49,7 @@ namespace DMS.API.Controllers.MD
             return Ok(transferObject);
         }
         [HttpPost("Insert")]
-        public async Task<IActionResult> Insert([FromBody] AccountTypeDto time)
+        public async Task<IActionResult> Insert([FromBody] MeetingRoomDto time)
         {
             var transferObject = new TransferObject();
             var result = await _service.Add(time);
@@ -69,7 +69,7 @@ namespace DMS.API.Controllers.MD
             return Ok(transferObject);
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] AccountTypeDto time)
+        public async Task<IActionResult> Update([FromBody] MeetingRoomDto time)
         {
             var transferObject = new TransferObject();
             await _service.Update(time);
@@ -106,22 +106,7 @@ namespace DMS.API.Controllers.MD
             }
             return Ok(transferObject);
         }
-        [HttpGet("Export")]
-        public async Task<IActionResult> Export([FromQuery] BaseMdFilter filter)
-        {
-            var transferObject = new TransferObject();
-            var result = await _service.Export(filter);
-            if (_service.Status)
-            {
-                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DSKND" + DateTime.Now.ToString() + ".xlsx");
-            }
-            else
-            {
-                transferObject.Status = false;
-                transferObject.MessageObject.MessageType = MessageType.Error;
-                transferObject.GetMessage("2000", _service);
-                return Ok(transferObject);
-            }
-        }
     }
+       
+    
 }

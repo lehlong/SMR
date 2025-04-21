@@ -18,9 +18,16 @@ namespace DMS.CORE.Entities.MD
         public Guid? Id { get; set; }
         [Column("MEETING_TITLE", TypeName = "NVARCHAR(255)")]
         public string? MeetingTitle { get; set; }
-        [Column("CHAIR_PERSON")]
-        public string? ChairPerson { get; set; }
-        [Column("TIME")]
-        public DateTime Time { get; set; }
+        [Column("MEETING_CONTENT", TypeName = "NVARCHAR(255)")]
+        public string? MeetingContent { get; set; }
+     
+        [Column("MEETING_ROOM_ID")]
+
+        public string? MeetingRoomid { get; set; }
+        [Column("START_DATE")]
+        public DateTime? startDate { get; set; }
+        
+        [Column("END_DATE")]
+        public DateTime? endDate { get; set; }
     }
 }

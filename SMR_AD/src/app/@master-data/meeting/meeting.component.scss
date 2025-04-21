@@ -1,0 +1,29 @@
+.file-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  
+  }
+  .file-list ul li {
+    font-size: 18px; 
+    line-height: 10px; 
+    padding: 5px; 
+    margin-bottom: 1px; 
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+    margin-top: 10px;
+   
+  }
+  .file-list ul li.ng-star-inserted {
+    background-color: #f0f0f0; 
+  }
+  .paginationFile .nz-pagination {
+    display: flex;
+    justify-content: flex-end; /* Căn sang bên phải */
+    margin-top: 10px; /* Thêm khoảng cách phía trên nếu cần */
+  }
+  .tableposition{
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+ 

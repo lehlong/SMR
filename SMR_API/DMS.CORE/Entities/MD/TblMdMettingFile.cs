@@ -9,15 +9,20 @@ using System.Threading.Tasks;
 
 namespace DMS.CORE.Entities.MD
 {
-    [Table("T_MD_METTING_DETAIL")]
-    public class TblMdMettingDetail : SoftDeleteEntity
+    [Table("T_MD_MEETINGFILE")]
+    public class TblMdMeetingFile 
     {
         [Key]
         [Column("ID")]
-        public string Id { get; set; }
+        public Guid? Id { get; set; }
         [Column("HEADER_ID")]
         public string HeaderId { get; set; }
-        [Column("PERSON_NAME")]
-        public string PersonName { get; set; }
+        [Column("FILE_PATH")]
+        public string FilePath { get; set; }
+        [Column("NAME")]
+        public string FileName { get; set; }
+        [Column("TYPE")]
+        public string Type { get; set; }
+
     }
 }
