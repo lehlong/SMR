@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS.CORE.Entities.MD
 {
-    [Table("T_MD_DEVICE")]
-    public class TblMdDevice : BaseEntity
+    [Table("T_MD_ROOM")]
+    public class TblMdRoom : BaseEntity
     {
         [Key]
         [Column("CODE")]
@@ -15,10 +15,14 @@ namespace DMS.CORE.Entities.MD
         [Column("NAME")]
         public string Name { get; set; }
 
+        [Column("ADDRESS")]
+        public string? Address { get; set; }
+
         [Column("NOTE")]
         public string? Note { get; set; }
-        [Column("DEVICE_TYPE")]
-        public string? DeviceType { get; set; }
+
+        [Column("FILE_PATH")]
+        public string? FilePath { get; set; }
 
     }
 }

@@ -28,9 +28,7 @@ export class AccountService {
     return this.commonService.put(`Account/ResetPassword?username=${username}`, {})
   }
 
-  exportExcel(params: any): Observable<any> {
-    return this.commonService.downloadFile('Partner/Export', params)
-  }
+
 
   delete(code: string | number): Observable<any> {
     return this.commonService.delete(`Partner/Delete/${code}`)
@@ -38,9 +36,5 @@ export class AccountService {
 
   getByType(params: any): Observable<any> {
     return this.commonService.get('Account/GetByType', params)
-  }
-
-  exportExcelASO(params: any): Observable<any> {
-    return this.commonService.downloadFile('Account/ExportASO', params)
   }
 }

@@ -24,10 +24,6 @@ export class ConfigDisplayService {
     return this.commonService.put('ConfigDisplay/Update', params)
   }
 
-  exportExcelConfigDisplay(params: any): Observable<any> {
-    return this.commonService.downloadFile('ConfigDisplay/Export', params)
-  }
-
   deleteConfigDisplay(id: string | number): Observable<any> {
     return this.commonService.delete(`ConfigDisplay/Delete/${id}`)
   }

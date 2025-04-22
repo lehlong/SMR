@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS.CORE.Entities.MD
 {
-    [Table("T_MD_DEVICE")]
-    public class TblMdDevice : BaseEntity
+    [Table("T_MD_DEVICE_TYPE")]
+    public class TblMdDeviceType : BaseEntity
     {
         [Key]
         [Column("CODE")]
@@ -17,8 +17,6 @@ namespace DMS.CORE.Entities.MD
 
         [Column("NOTE")]
         public string? Note { get; set; }
-        [Column("DEVICE_TYPE")]
-        public string? DeviceType { get; set; }
 
     }
 }

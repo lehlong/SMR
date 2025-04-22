@@ -1,295 +1,125 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Observable, throwError, BehaviorSubject } from 'rxjs'
-import {
-  catchError,
-  tap,
-  map,
-  finalize,
-  switchMap,
-  filter,
-  take,
-} from 'rxjs/operators'
+import { catchError, tap, map, finalize, switchMap, filter, take } from 'rxjs/operators'
 import { environment } from '../../environments/environment'
 import { NzMessageService } from 'ng-zorro-antd/message'
 import { Router } from '@angular/router'
 import { GlobalService } from './global.service'
-import { RouterTestingHarness } from '@angular/router/testing'
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class CommonService {
   private baseUrl = environment.apiUrl
   private refreshTokenInProgress = false
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-    null,
-  )
+  private refreshTokenSubject = new BehaviorSubject<any>(null)
 
   constructor(
     private http: HttpClient,
     private message: NzMessageService,
     private router: Router,
-    private globalService: GlobalService,
-  ) { }
+    private globalService: GlobalService
+  ) {}
 
-  get<T>(
-    endpoint: string,
-    params?: { [key: string]: any },
-    showLoading: boolean = true,
-  ): Observable<T> {
-    let httpParams = new HttpParams()
-    if (params) {
-      Object.keys(params).forEach((key) => {
-        if (params[key] !== null && params[key] !== undefined) {
-          if (Array.isArray(params[key])) {
-            params[key].forEach((value: any) => {
-              httpParams = httpParams.append(key, value)
-            })
-          } else {
-            httpParams = httpParams.append(key, params[key])
-          }
-        }
-      })
-    }
-    if (showLoading) {
-      this.globalService.incrementApiCallCount() // Tăng bộ đếm
-    }
-    return this.http
-      .get<any>(`${this.baseUrl}/${endpoint}`, { params: httpParams })
-      .pipe(
-        tap((response) => {
-          if (response.status == false) {
-            this.showError(response.messageObject.message)
-          }
-        }), // Log phản hồi API
-        map(this.handleApiResponse),
-        catchError((error) => {
-          return this.handleError(error, () =>
-            this.get<T>(endpoint, params, showLoading),
-          );
-        }),
-        finalize(() => {
-          this.globalService.decrementApiCallCount();
-        }),
-      );
-  }
-
-  post<T>(
-    endpoint: string,
-    data: any,
-    showSuccess: boolean = true,
-    showLoading: boolean = true,
-  ): Observable<T> {
-    if (showLoading) {
-      this.globalService.incrementApiCallCount() // Tăng bộ đếm
-    }
-    return this.http.post<any>(`${this.baseUrl}/${endpoint}`, data).pipe(
-      map(this.handleApiResponse),
-      tap(() => {
-        if (showSuccess) {
-          this.showSuccess('Thêm mới thông tin thành công')
-        }
+  get<T>(endpoint: string, params?: any, showLoading = true): Observable<T> {
+    return this.handleRequest(
+      this.http.get<any>(`${this.baseUrl}/${endpoint}`, {
+        params: this.toHttpParams(params),
       }),
-      catchError((error) =>
-        this.handleError(error, () =>
-          this.post<T>(endpoint, data, showSuccess, showLoading),
-        ),
-      ),
-      finalize(() => this.globalService.decrementApiCallCount()), // Giảm bộ đếm khi hoàn thành
+      showLoading,
+      () => this.get<T>(endpoint, params, showLoading)
     )
   }
 
-  put<T>(
-    endpoint: string,
-    data: any,
-    showLoading: boolean = true,
+  post<T>(endpoint: string, data: any, showSuccess = true, showLoading = true): Observable<T> {
+    return this.handleRequest(
+      this.http.post<any>(`${this.baseUrl}/${endpoint}`, data),
+      showLoading,
+      () => this.post<T>(endpoint, data, showSuccess, showLoading),
+      () => showSuccess && this.showSuccess('Thêm mới thông tin thành công')
+    )
+  }
+
+  put<T>(endpoint: string, data: any, showLoading = true): Observable<T> {
+    return this.handleRequest(
+      this.http.put<any>(`${this.baseUrl}/${endpoint}`, data),
+      showLoading,
+      () => this.put<T>(endpoint, data, showLoading),
+      () => this.showSuccess('Cập nhật thông tin thành công')
+    )
+  }
+
+  delete<T>(endpoint: string, data: any = {}, showLoading = true): Observable<T> {
+    return this.handleRequest(
+      this.http.delete<any>(`${this.baseUrl}/${endpoint}`, data),
+      showLoading,
+      () => this.delete<T>(endpoint, data, showLoading),
+      () => this.showSuccess('Xoá thành công')
+    )
+  }
+
+  deletes<T>(endpoint: string, data: string | number[], showLoading = true): Observable<T> {
+    return this.handleRequest(
+      this.http.request<any>('delete', `${this.baseUrl}/${endpoint}`, { body: data }),
+      showLoading,
+      () => this.deletes<T>(endpoint, data, showLoading),
+      () => this.showSuccess('Xoá thành công')
+    )
+  }
+
+  // ========= HELPER METHODS =========
+
+  private handleRequest<T>(
+    request$: Observable<any>,
+    showLoading: boolean,
+    retryCallback: () => Observable<T>,
+    onSuccess?: () => void
   ): Observable<T> {
-    if (showLoading) {
-      this.globalService.incrementApiCallCount() // Tăng bộ đếm
-    }
-    return this.http.put<any>(`${this.baseUrl}/${endpoint}`, data).pipe(
+    if (showLoading) this.globalService.incrementApiCallCount()
+
+    return request$.pipe(
+      tap(response => {
+        if (response.status === false) this.showError(response.messageObject.message)
+        if (onSuccess) onSuccess()
+      }),
       map(this.handleApiResponse),
-      tap(() => this.showSuccess('Cập nhật thông tin thành công')),
-      catchError((error) =>
-        this.handleError(error, () => this.put<T>(endpoint, data, showLoading)),
-      ),
-      finalize(() => this.globalService.decrementApiCallCount()), // Giảm bộ đếm khi hoàn thành
+      catchError(error => this.handleError(error, retryCallback)),
+      finalize(() => this.globalService.decrementApiCallCount())
     )
   }
 
-  delete<T>(
-    endpoint: string,
-    data: any = {},
-    showLoading: boolean = true,
-  ): Observable<T> {
-    if (showLoading) {
-      this.globalService.incrementApiCallCount() // Tăng bộ đếm
-    }
-    return this.http.delete<any>(`${this.baseUrl}/${endpoint}`, data).pipe(
-      map(this.handleApiResponse),
-      tap(() => this.showSuccess('Xoá thành công')),
-      catchError((error) =>
-        this.handleError(error, () =>
-          this.delete<T>(endpoint, data, showLoading),
-        ),
-      ),
-      finalize(() => this.globalService.decrementApiCallCount()), // Giảm bộ đếm khi hoàn thành
-    )
-  }
-
-  deletes<T>(
-    endpoint: string,
-    data: string | number[],
-    showLoading: boolean = true,
-  ): Observable<T> {
-    if (showLoading) {
-      this.globalService.incrementApiCallCount() // Tăng bộ đếm
-    }
-    return this.http
-      .request<any>('delete', `${this.baseUrl}/${endpoint}`, { body: data })
-      .pipe(
-        map(this.handleApiResponse),
-        tap(() => this.showSuccess('Xoá thành công')),
-        catchError((error) =>
-          this.handleError(error, () =>
-            this.deletes<T>(endpoint, data, showLoading),
-          ),
-        ),
-        finalize(() => this.globalService.decrementApiCallCount()), // Giảm bộ đếm khi hoàn thành
-      )
-  }
-
-  uploadFile(
-    endpoint: string,
-    file: File,
-    paramsUrl?: { [key: string]: any },
-    params?: { [key: string]: any },
-    showLoading: boolean = true,
-  ): Observable<any> {
-    const formData: FormData = new FormData()
-    formData.append('file', file, file.name)
+  private toHttpParams(params?: any): HttpParams {
     let httpParams = new HttpParams()
-    if (paramsUrl) {
-      Object.keys(paramsUrl).forEach((key) => {
-        if (paramsUrl[key]) {
-          httpParams = httpParams.append(key, paramsUrl[key])
+    if (!params) return httpParams
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (Array.isArray(value)) {
+          value.forEach(val => {
+            if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+              httpParams = httpParams.append(key, String(val))
+            }
+          })
+        } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+          httpParams = httpParams.append(key, String(value))
         }
-      })
-    }
-
-    if (params) {
-      Object.keys(params).forEach((key) => {
-        formData.append(key, params[key])
-      })
-    }
-
-    if (showLoading) {
-      this.globalService.incrementApiCallCount() // Tăng bộ đếm
-    }
-    return this.http
-      .post<any>(`${this.baseUrl}/${endpoint}`, formData, {
-        params: httpParams,
-      })
-      .pipe(
-        map(this.handleApiResponse),
-        tap(),
-        catchError((error) =>
-          this.handleError(error, () =>
-            this.uploadFile(endpoint, file, paramsUrl, params, showLoading),
-          ),
-        ),
-        finalize(() => this.globalService.decrementApiCallCount()), // Giảm bộ đếm khi hoàn thành
-      )
-  }
-
-  uploadFiles(
-    endpoint: string,
-    files: File[],
-    paramsUrl?: { [key: string]: any },
-    params?: { [key: string]: any },
-    showLoading: boolean = true,
-  ): Observable<any> {
-    const formData: FormData = new FormData()
-    files.forEach((file) => {
-      formData.append('files', file, file.name)
+      }
     })
 
-    let httpParams = new HttpParams()
-    if (paramsUrl) {
-      Object.keys(paramsUrl).forEach((key) => {
-        const value = paramsUrl[key]
-        if (Array.isArray(value)) {
-          value.forEach((val) => {
-            httpParams = httpParams.append(key, val)
-          })
-        } else if (value) {
-          httpParams = httpParams.append(key, value)
-        }
-      })
-    }
-
-    if (params) {
-      Object.keys(params).forEach((key) => {
-        formData.append(key, params[key])
-      })
-    }
-
-    if (showLoading) {
-      this.globalService.incrementApiCallCount() // Tăng bộ đếm
-    }
-    return this.http
-      .post<any>(`${this.baseUrl}/${endpoint}`, formData, {
-        params: httpParams,
-      })
-      .pipe(
-        map(this.handleApiResponse),
-        tap(),
-        catchError((error) =>
-          this.handleError(error, () =>
-            this.uploadFiles(endpoint, files, paramsUrl, params, showLoading),
-          ),
-        ),
-        finalize(() => this.globalService.decrementApiCallCount()), // Giảm bộ đếm khi hoàn thành
-      )
+    return httpParams
   }
 
-  downloadFile(
-    endpoint: string,
-    params?: any,
-    showLoading: boolean = true,
-  ): Observable<Blob> {
-    if (showLoading) {
-      this.globalService.incrementApiCallCount() // Tăng bộ đếm
+
+  private handleApiResponse(response: any): any {
+    const { code } = response.messageObject
+    if (!['200', '', '0100', '0103', '0105'].includes(code)) {
+      throw { status: code, error: response }
     }
-    return this.http
-      .get(`${this.baseUrl}/${endpoint}`, {
-        params: params,
-        responseType: 'blob',
-      })
-      .pipe(
-        tap(),
-        catchError((error) =>
-          this.handleError(error, () =>
-            this.downloadFile(endpoint, params, showLoading),
-          ),
-        ),
-        finalize(() => this.globalService.decrementApiCallCount()), // Giảm bộ đếm khi hoàn thành
-      )
+    return response.data
   }
 
-  private showSuccess(message: string): void {
-    this.message.create('success', message)
-  }
-  private showError(message: string): void {
-    this.message.create('error', message)
-  }
-
-  private handleError = (
-    error: HttpErrorResponse,
-    retryCallback: () => Observable<any>,
-  ): Observable<any> => {
+  private handleError(error: HttpErrorResponse, retryCallback: () => Observable<any>): Observable<any> {
     let errorMessage = 'Unknown error!'
+
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Error: ${error.error.message}`
     } else {
@@ -299,72 +129,50 @@ export class CommonService {
           this.refreshTokenSubject.next(null)
 
           return this.refreshToken().pipe(
-            switchMap(({ data }: any) => {
+            switchMap(({ data }) => {
               this.refreshTokenInProgress = false
               this.refreshTokenSubject.next(data)
               localStorage.setItem('token', data?.accessToken)
               localStorage.setItem('refreshToken', data?.refreshToken)
               return retryCallback()
             }),
-            catchError((refreshError) => {
+            catchError(err => {
               this.refreshTokenInProgress = false
               localStorage.clear()
               this.router.navigate(['/login'])
-              return throwError(refreshError)
-            }),
+              return throwError(() => err)
+            })
           )
         } else {
           return this.refreshTokenSubject.pipe(
-            filter((result: any) => result !== null),
+            filter(result => result !== null),
             take(1),
-            switchMap(() => retryCallback()),
+            switchMap(() => retryCallback())
           )
         }
       }
-      if (error.error && error.error.messageObject) {
-        errorMessage = `MSG${error.error.messageObject.code} ${error.error.message}`
 
-        //console.log(error)
-        //this.showError(error.error.messageObject.messageDetail.message)
-        // Swal.fire({
-        //   showCloseButton: true,
-        //   color: '#e74c3c',
-        //   width: 600,
-        //   html: `<strong>${`MSG${error.error.messageObject.code}`}</strong><br><strong>${
-        //     error.error.messageObject.message
-        //   }</strong><br><br>${error.error.messageObject.messageDetail.replace(/\./g, '.<br>')}`,
-        //   footer: `LogID - ${error.error.messageObject.logId}`,
-        //   position: 'top-end',
-        //   showConfirmButton: false,
-        //   allowOutsideClick: true,
-        // })
+      if (error.error?.messageObject) {
+        const { code, message } = error.error.messageObject
+        errorMessage = `MSG${code} ${message}`
       } else {
         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`
       }
     }
-    return throwError(errorMessage)
+
+    return throwError(() => errorMessage)
   }
 
   private refreshToken(): Observable<any> {
     const refreshToken = localStorage.getItem('refreshToken')
-    return this.http.post<any>(`${this.baseUrl}/Auth/RefreshToken`, {
-      refreshToken,
-    })
+    return this.http.post<any>(`${this.baseUrl}/Auth/RefreshToken`, { refreshToken })
   }
 
-  private handleApiResponse(response: any): any {
-    if (
-      response.messageObject.code !== '200' &&
-      response.messageObject.code !== '' &&
-      response.messageObject.code !== '0100' &&
-      response.messageObject.code !== '0103' &&
-      response.messageObject.code !== '0105'
-    ) {
-      throw {
-        status: response.messageObject.code,
-        error: response,
-      }
-    }
-    return response.data
+  private showSuccess(message: string): void {
+    this.message.create('success', message)
+  }
+
+  private showError(message: string): void {
+    this.message.create('error', message)
   }
 }

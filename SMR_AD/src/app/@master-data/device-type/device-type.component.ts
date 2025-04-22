@@ -1,57 +1,42 @@
-import { Component, OnDestroy, OnInit, Type } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ShareModule } from '../../shared/share-module';
-import { PaginationResult, BaseFilter } from '../../models/base.model';
-import { GlobalService } from '../../service/global.service';
-import { DeviceService } from '../../service/master-data/Device.service';
+import { BaseFilter, PaginationResult } from '../../models/base.model';
 import { DeviceTypeService } from '../../service/master-data/device-type.service';
+import { GlobalService } from '../../service/global.service';
 
 @Component({
-  selector: 'app-device',
-  imports: [ShareModule],
+  selector: 'app-device-type',
   standalone: true,
-  templateUrl: './device.component.html',
-  styleUrl: './device.component.scss',
+  imports: [ShareModule],
+  templateUrl: './device-type.component.html',
+  styleUrl: './device-type.component.scss',
 })
-export class DeviceComponent implements OnInit, OnDestroy {
+export class DeviceTypeComponent implements OnInit, OnDestroy {
   paginationResult = new PaginationResult();
   loading = false;
   filter = new BaseFilter();
   visible = false;
   isEdit = false;
   item: any = this.initItem();
-  lstDeviceType: any[] = [];
 
   constructor(
-    private _service: DeviceService,
-    private _sDeviceType: DeviceTypeService,
+    private _service: DeviceTypeService,
     private globalService: GlobalService
   ) {
     this.globalService.setBreadcrumb([
-      { name: 'Danh sách thiết bị', path: 'master-data/device' },
+      { name: 'Loại thiết bị', path: 'master-data/device-type' },
     ]);
   }
 
   ngOnInit() {
     this.search();
-    this.getDeviceType();
-  }
-
-  getDeviceType() {
-    this._sDeviceType.getAll().subscribe({
-      next: (data) => (this.lstDeviceType = data),
-      error: (err) => console.error(err),
-    });
-  }
-  getDeviceTypeName(code: string) {
-    const deviceType = this.lstDeviceType.find((item) => item.code === code);
-    return deviceType ? deviceType.name : '';
   }
 
   ngOnDestroy() {
     this.globalService.setBreadcrumb([]);
   }
   private initItem() {
-    return { code: '', name: '', note: '', deviceType: '', isActive: true };
+    return { code: '', name: '', note: '', isActive: true };
   }
 
   search() {

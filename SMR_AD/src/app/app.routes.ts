@@ -8,6 +8,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { NotFoundComponent } from './layouts/not-found/not-found.component';
 import { systemManagerRoutes } from './@system-manager/system-manager.routes';
 import { masterDataRoutes } from './@master-data/master-data.routes';
+import { MeetingComponent } from './meeting/meeting.component';
 
 export const routes: Routes = [
   {
@@ -16,6 +17,7 @@ export const routes: Routes = [
     children: [
       {path: '', redirectTo: 'home', pathMatch: 'full'},
       {path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
+      {path: 'meeting', component: MeetingComponent, canActivate: [AuthGuard]},
       {path: 'system-manager', children: systemManagerRoutes, canActivate: [AuthGuard]},
       {path: 'master-data', children: masterDataRoutes, canActivate: [AuthGuard]},
     ],
@@ -29,7 +31,7 @@ export const routes: Routes = [
   },
 
   // { path: 'meeting', component:  },
-  
+
   { path: '**', component: NotFoundComponent },
 ];
 

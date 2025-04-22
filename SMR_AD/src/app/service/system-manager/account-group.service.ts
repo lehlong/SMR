@@ -32,7 +32,5 @@ export class AccountGroupService {
   delete(id: string | number): Observable<any> {
     return this._commonService.delete(`AccountGroup/Delete/${id}`);
   }
-  ExportExcel(params: any): Observable<any> {
-    return this._commonService.downloadFile(`AccountGroup/Export`, params);
-  }
+
 }

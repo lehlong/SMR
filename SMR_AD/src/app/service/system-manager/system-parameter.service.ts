@@ -23,10 +23,6 @@ export class SystemParamaterService {
     return this.commonService.put('XHTD/SystemParameter/Update', params);
   }
 
-  exportExcel(params: any): Observable<any> {
-    return this.commonService.downloadFile('XHTD/SystemParameter/Export', params);
-  }
-
   delete(code: string | number): Observable<any> {
     return this.commonService.delete(`XHTD/SystemParameter/Delete/${code}`);
   }

@@ -9,7 +9,7 @@ export class DeviceService {
   constructor(private commonService: CommonService) { }
 
   search(params: any): Observable<any> {
-    
+
     return this.commonService.get('Device/Search', params)
   }
 
@@ -17,15 +17,13 @@ export class DeviceService {
     return this.commonService.get('Device/GetAll')
   }
 
-
-
   create(params: any): Observable<any> {
     console.log('params', params)
     return this.commonService.post('Device/Insert', params)
   }
 
   update(params: any): Observable<any> {
-  
+
     return this.commonService.put('Device/Update', params)
   }
 

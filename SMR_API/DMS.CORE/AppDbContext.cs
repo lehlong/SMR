@@ -1,7 +1,7 @@
 ﻿using DMS.CORE.Common;
 using DMS.CORE.Entities.AD;
 using DMS.CORE.Entities.MD;
-
+using DMS.CORE.Entities.MT;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
@@ -125,12 +125,23 @@ namespace DMS.CORE
         #endregion
 
         #region Master Data
+        public DbSet<TblMdDeviceType> TblMdDeviceType { get; set; }
+        public DbSet<TblMdRoom> TblMdRoom { get; set; }
+        public DbSet<TblMdRoomDevice> TblMdRoomDevice { get; set; }
+
+
         public DbSet<TblMdAccountType> tblMdAccountType { get; set; }
         public DbSet<TblMdMeeting> TblMdMeeting { get; set; }
         public DbSet<TblMdMeetingPeolple> TblMdMeetingPeolple { get; set; }
         public DbSet<TblMdMeetingFile> tblMdMeetingFiles { get; set; }
         public DbSet<TblMdDevice> tblMdDevice { get; set; }
         public DbSet<TblMdMeetingRoom> tblMdMeetingRoom { get; set; }
+        #endregion
+
+        #region Meeting
+        public DbSet<TblMtMeetingFile> TblMtMeetingFile { get; set; }
+        public DbSet<TblMtMeeting> TblMtMeeting { get; set; }
+        public DbSet<TblMtMeetingResource> TblMtMeetingResource { get; set; }
         #endregion
 
     }

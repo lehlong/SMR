@@ -29,16 +29,14 @@ export class GlobalService {
   }
   setUserName(userName: string): void {
     this.userNameSubject.next(userName);
-    localStorage.setItem('userName', userName); // Lưu userName vào localStorage nếu cần
+    localStorage.setItem('userName', userName);
   }
 
   getUserName(){
     var usString : any = localStorage.getItem('userName')
-   // var username = JSON.parse(usString);
     return usString;
   }
 
-  // Phương thức để lấy userName từ localStorage khi cần
   loadUserNameFromStorage(): void {
     const storedUserName = localStorage.getItem('userName');
     if (storedUserName) {
@@ -138,5 +136,14 @@ export class GlobalService {
 
   isValidSelected() {
     return this.orgCode != 'undefined' && this.warehouseCode != 'undefined' ? false : true;
+  }
+
+  isBase64Image(str: string): boolean {
+    const dataUriPattern = /^data:image\/(png|jpg|jpeg|gif|bmp|webp);base64,/;
+    if (!dataUriPattern.test(str)) return false;
+    const base64String = str.split(',')[1];
+    if (!base64String || base64String.length % 4 !== 0) return false;
+    const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+    return base64Regex.test(base64String);
   }
 }

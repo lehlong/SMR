@@ -24,10 +24,6 @@ export class ConfigTemplateService {
     return this.commonService.put('ConfigTemplate/Update', params);
   }
 
-  exportExcelConfigTemplate(params: any): Observable<any> {
-    return this.commonService.downloadFile('ConfigTemplate/Export', params);
-  }
-
   deleteConfigTemplate(id: string | number): Observable<any> {
     return this.commonService.delete(`ConfigTemplate/Delete/${id}`);
   }

@@ -1,0 +1,138 @@
+<nz-page-header nzBackIcon [nzGhost]="false">
+  <nz-page-header-title>PHÒNG HỌP</nz-page-header-title>
+  <nz-page-header-subtitle>Danh sách phòng họp</nz-page-header-subtitle>
+
+  <nz-page-header-extra>
+    <nz-space>
+      <nz-input-group *nzSpaceItem nzSearch [nzAddOnAfter]="suffixIcons">
+        <input type="text" nz-input placeholder="Tìm kiếm" [(ngModel)]="filter.keyWord" (keydown.enter)="search()" />
+      </nz-input-group>
+      <button *nzSpaceItem nz-button nzType="primary" (click)="openCreate()">
+        <nz-icon nzType="plus" /> Thêm mới
+      </button>
+    </nz-space>
+    <ng-template #suffixIcons>
+      <button nz-button><nz-icon nzType="search" (click)="search()" /></button>
+      <button nz-button><nz-icon nzType="redo" (click)="reset()" /></button>
+    </ng-template>
+  </nz-page-header-extra>
+
+  <nz-page-header-content>
+    <div class="data-table">
+      <nz-table #table [nzData]="paginationResult.data" [nzFrontPagination]="false"
+        [nzScroll]="{ y: 'calc(100vh - 244px)', x: '100%' }" [nzLoading]="loading" [nzShowPagination]="false">
+        <thead>
+          <tr>
+            <th nzWidth="80px" nzAlign="center">STT</th>
+            <th>Tên</th>
+            <th>Địa điểm chi tiết</th>
+            <th>Ghi chú</th>
+            <th nzAlign="center">Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (data of table.data; track data; let i = $index) {
+          <tr (click)="openEdit(data)">
+            <td nzAlign="center">
+              {{ (filter.currentPage - 1) * filter.pageSize + i + 1 }}
+            </td>
+            <td>{{ data.name }}</td>
+            <td>{{ data.address }}</td>
+            <td>{{ data.note }}</td>
+            <td nzAlign="center">
+              <nz-tag [nzColor]="data.isActive ? 'success' : 'error'">
+                <nz-icon [nzType]="data.isActive ? 'check-circle' : 'close-circle'" />
+                <span>{{ data.isActive ? 'Kích hoạt' : 'Khoá' }}</span>
+              </nz-tag>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </nz-table>
+    </div>
+
+    <div class="paging-table">
+      <nz-pagination nzShowSizeChanger [nzPageIndex]="filter.currentPage" [nzTotal]="paginationResult.totalRecord"
+        [nzPageSize]="filter.pageSize" (nzPageIndexChange)="onPageChange($event)"
+        (nzPageSizeChange)="onPageChange(1, $event)"></nz-pagination>
+    </div>
+  </nz-page-header-content>
+</nz-page-header>
+
+<nz-drawer [nzVisible]="visible" nzPlacement="right" [nzTitle]="isEdit ? 'Cập nhật ' : 'Thêm mới '" [nzExtra]="extra"
+  (nzOnClose)="close()" [nzWidth]="'40%'">
+  <ng-container *nzDrawerContent>
+    <nz-tabset>
+      <nz-tab nzTitle="Thông tin">
+        <div class="drawer-item">
+          <label>Tên</label>
+          <input nz-input placeholder="Nhập tên" [(ngModel)]="item.name" />
+        </div>
+        <div class="drawer-item">
+          <label>Địa điểm chi tiết</label>
+          <input nz-input placeholder="Nhập địa điểm chi tiết" [(ngModel)]="item.address" />
+        </div>
+        <div class="drawer-item">
+          <label>Ghi chú</label>
+          <input nz-input placeholder="Nhập ghi chú" [(ngModel)]="item.note" />
+        </div>
+
+        <div class="drawer-item">
+          <label>Sơ đồ phòng họp</label>
+          <div class="main-upload">
+            <div class="upload-avatar" (click)="fileInput.click()">
+              <nz-icon nzType="cloud-upload" nzTheme="outline" style="font-size: 24px;" />
+              <div>Chọn ảnh</div>
+            </div>
+            <div class="avatar-preview" *ngIf="imageBase64 != null && imageBase64 != ''">
+              <img [src]="imageBase64" width="128" height="128" />
+            </div>
+          </div>
+          <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none;" />
+        </div>
+
+        <nz-radio-group [(ngModel)]="item.isActive">
+          <label nz-radio [nzValue]="true">Kích hoạt</label>
+          <label nz-radio [nzValue]="false">Khoá</label>
+        </nz-radio-group>
+      </nz-tab>
+      <nz-tab nzTitle="Thiết bị">
+        <nz-table #tableDevice [nzData]="item.listDevice" [nzFrontPagination]="false" [nzShowPagination]="false">
+          <thead>
+            <tr>
+              <th style="width: 70%;">Thiết bị</th>
+              <th>Số lượng</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of tableDevice.data; track data) {
+            <tr>
+              <td>
+                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn thiết bị" [(ngModel)]="data.deviceCode">
+                  <nz-option *ngFor="let i of lstDevice" [nzLabel]="i.name" [nzValue]="i.code"></nz-option>
+                </nz-select>
+              </td>
+              <td> <input nz-input placeholder="Basic usage" [(ngModel)]="data.quantity" type="number" /></td>
+            </tr>
+            }
+          </tbody>
+        </nz-table>
+        <div style="display: flex; align-items: center; justify-content: center; padding: 12px;">
+          <button nz-button nzType="dashed" (click)="pushItemToListDevice()">
+            <nz-icon nzType="plus" />
+            Thêm
+          </button>
+        </div>
+
+
+      </nz-tab>
+    </nz-tabset>
+  </ng-container>
+</nz-drawer>
+
+<ng-template #extra>
+  <button nz-button nzType="primary" (click)="submit()">
+    <nz-icon nzType="save" nzTheme="outline" />
+    {{ isEdit ? 'Cập nhật' : 'Tạo mới' }}
+  </button>
+</ng-template>

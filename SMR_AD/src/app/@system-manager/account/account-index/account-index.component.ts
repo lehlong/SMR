@@ -173,16 +173,6 @@ export class AccountIndexComponent {
     const positionName = this.positionList.find(item => item.code === positionCode);
     return positionName ? positionName.name : 'N/A';
   }
-  // exportExcel() {
-  //   return this._service.exportExcel(this.filter).subscribe((result: Blob) => {
-  //     const blob = new Blob([result], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-  //     const url = window.URL.createObjectURL(blob);
-  //     var anchor = document.createElement('a');
-  //     anchor.download = 'danh-sach-doi-tac.xlsx';
-  //     anchor.href = url;
-  //     anchor.click();
-  //   });
-  // }
 
   reset() {
     this.filter = new AccountFilter()

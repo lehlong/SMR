@@ -7,17 +7,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS.BUSINESS.Dtos.MD
 {
-    public class DeviceDto : BaseMdDto, IMapFrom, IDto
+    public class DeviceTypeDto : BaseMdDto, IMapFrom, IDto
     {
         [Key]
         public string Code { get; set; }
         public string Name { get; set; }
         public string? Note { get; set; }
-        public string? DeviceType { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<TblMdDevice, DeviceDto>().ReverseMap();
+            profile.CreateMap<TblMdDeviceType, DeviceTypeDto>().ReverseMap();
         }
     }
 }

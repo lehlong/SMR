@@ -1,6 +1,6 @@
 <nz-page-header nzBackIcon [nzGhost]="false">
-  <nz-page-header-title>THIẾT BỊ</nz-page-header-title>
-  <nz-page-header-subtitle>Danh sách thiết bị</nz-page-header-subtitle>
+  <nz-page-header-title>LOẠI THIẾT BỊ</nz-page-header-title>
+  <nz-page-header-subtitle>Danh sách loại thiết bị</nz-page-header-subtitle>
 
   <nz-page-header-extra>
     <nz-space>
@@ -38,7 +38,6 @@
             <th nzWidth="80px" nzAlign="center">STT</th>
             <th>Mã</th>
             <th>Tên</th>
-            <th>Loại thiết bị</th>
             <th>Ghi chú</th>
             <th nzAlign="center">Trạng thái</th>
           </tr>
@@ -51,7 +50,6 @@
               </td>
               <td>{{ data.code }}</td>
               <td>{{ data.name }}</td>
-              <td>{{ getDeviceTypeName(data.deviceType) }}</td>
               <td>{{ data.note }}</td>
               <td nzAlign="center">
                 <nz-tag [nzColor]="data.isActive ? 'success' : 'error'">
@@ -96,13 +94,6 @@
       <label>Tên</label>
       <input nz-input placeholder="Nhập tên" [(ngModel)]="item.name" />
     </div>
-    <div class="drawer-item">
-      <label>Loại thiết bị</label>
-      <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn loại thiết bị" [(ngModel)]="item.deviceType">
-        <nz-option *ngFor="let i of lstDeviceType" [nzLabel]="i.name" [nzValue]="i.code"></nz-option>
-      </nz-select>
-    </div>
-
     <div class="drawer-item">
       <label>Ghi chú</label>
       <input nz-input placeholder="Nhập ghi chú" [(ngModel)]="item.note" />
