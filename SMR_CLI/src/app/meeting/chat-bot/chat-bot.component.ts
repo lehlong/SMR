@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ShareModule } from '../../shared/share-module';
 import { MeetingService } from '../../service/master-data/Meeting.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-chat-bot',
@@ -12,15 +13,27 @@ import { MeetingService } from '../../service/master-data/Meeting.service';
 export class ChatBotComponent implements OnInit {
 
   @Input() meetingId: string | null = '';
-
+ 
   inputChatbot: string = '';
   chatAi : any[] = [];
-
-  constructor(private service: MeetingService) {}
+  isTyping: boolean = false; 
+  constructor(private service: MeetingService,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
     console.log('meetingId', this.meetingId);
   }
+  decodeUnicodeEscapes(str: string): string {
+    return str.replace(/\\u([a-fA-F0-9]{4})/g, (_, g1) =>
+      String.fromCharCode(parseInt(g1, 16))
+    );
+  }
+  removeEmoji(text: string): string {
+    this.decodeUnicodeEscapes(text);
+    return text.replace(/([\uD800-\uDBFF][\uDC00-\uDFFF])/g, '');
+  }
+ 
   onAskChatbot() {
     this.chatAi.push({
       role: 'User',
@@ -32,10 +45,21 @@ export class ChatBotComponent implements OnInit {
       content: ''
     };
     this.chatAi.push(aiMessage);
+  
 
     this.service.sendMessage(this.inputChatbot).subscribe({
       next: (chunk) => {
-        aiMessage.content += chunk.replaceAll('\n', '<br>');
+        
+          console.log(chunk)
+          const formattedText = this.removeEmoji(chunk)
+          .replaceAll('"', '')
+          .replaceAll('[', '')
+          .replaceAll(']', '')
+          .replaceAll(',', '')
+          .replace(/\\n/g, '<br>')
+
+    aiMessage.content += formattedText;
+       
       },
       error: (err) => {
         console.error('API error:', err);

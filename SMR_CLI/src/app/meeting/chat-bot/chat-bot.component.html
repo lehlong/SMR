@@ -8,7 +8,7 @@
 
   <div #chatContent class="chat-ai-content" *ngIf="chatAi.length != 0">
     @for (data of chatAi; track data) {
-    <div *ngIf="data.role == 'User'" class="message-item-right">{{data.content}}</div>
+    <div  *ngIf="data.role == 'User'" class="message-item-right">{{data.content}}</div>
     <div *ngIf="data.role == 'DeepSeek'" class="message-item-left" [innerHTML]="data.content"></div>
     }
 
