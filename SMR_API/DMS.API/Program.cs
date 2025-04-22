@@ -9,39 +9,41 @@ using DMS.API.AppCode.Extensions;
 using NLog;
 using NLog.Extensions.Logging;
 using DMS.API.Middleware;
-using Hangfire;
-using Hangfire.Oracle.Core;
-using DMS.BUSINESS.Services.AD;
 using DMS.BUSINESS.Services.HUB;
-using DMS.API.AppCode.Util;
-using DMS.CORE;
-using Common;
 using Microsoft.Extensions.FileProviders;
 
 var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.json", optional: true)
-                .AddEnvironmentVariables().Build();
-var logger = LogManager.Setup()
-                       .LoadConfiguration(new NLogLoggingConfiguration(config.GetSection("NLog")))
-                       .GetCurrentClassLogger();
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables()
+    .Build();
 
+var logger = LogManager.Setup()
+    .LoadConfiguration(new NLogLoggingConfiguration(config.GetSection("NLog")))
+    .GetCurrentClassLogger();
 
 var builder = WebApplication.CreateBuilder(args);
-//builder.Services.AddHangfire(configuration =>
-//            configuration.UseStorage(new OracleStorage(config.GetConnectionString("Connection"), new OracleStorageOptions())));
 
-// Thêm dịch vụ Hangfire
-//builder.Services.AddHangfireServer();
-
+// 1. Services
 builder.Services.AddControllers();
 builder.Services.AddDIServices(builder.Configuration);
-//builder.Services.AddDIXHTDServices(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMvc();
+builder.Services.AddMemoryCache();
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+});
+builder.Services.Configure<FormOptions>(o =>
+{
+    o.ValueLengthLimit = int.MaxValue;
+    o.MultipartBodyLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = int.MaxValue;
+});
+
+// 2. Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("V1", new OpenApiInfo
@@ -50,6 +52,7 @@ builder.Services.AddSwaggerGen(options =>
         Title = "WebAPI",
         Description = "<a href='/log' target = '_blank'>Bấm vào đây để xem log file</a>",
     });
+
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Scheme = "Bearer",
@@ -59,17 +62,19 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Bearer Authentication with JWT Token",
         Type = SecuritySchemeType.Http
     });
+
     options.AddSecurityRequirement(new OpenApiSecurityRequirement {
         {
             new OpenApiSecurityScheme {
                 Reference = new OpenApiReference {
                     Id = "Bearer",
-                        Type = ReferenceType.SecurityScheme
+                    Type = ReferenceType.SecurityScheme
                 }
             },
-            new List < string > ()
+            new List<string>()
         }
     });
+
     options.MapType<TimeSpan>(() => new OpenApiSchema
     {
         Type = "string",
@@ -77,6 +82,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// 3. JWT
 builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -89,102 +95,49 @@ builder.Services.AddAuthentication(opt =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = config.GetSection("JWT:Issuer").Value,
-        ValidAudience = config.GetSection("JWT:Audience").Value,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("JWT:Key").Value)),
+        ValidIssuer = config["JWT:Issuer"],
+        ValidAudience = config["JWT:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"])),
         ClockSkew = TimeSpan.Zero
     };
 });
 
-builder.Services.Configure<FormOptions>(o =>
+// 4. CORS
+builder.Services.AddCors(options =>
 {
-    o.ValueLengthLimit = int.MaxValue;
-    o.MultipartBodyLengthLimit = int.MaxValue;
-    o.MemoryBufferThreshold = int.MaxValue;
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 });
-
-builder.Services.AddSignalR(options =>
-{
-    options.EnableDetailedErrors = true;
-});
-
-builder.Services.AddMemoryCache();
-
-//builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
-//        builder =>
-//        {
-//            builder.AllowAnyHeader()
-//                    .AllowAnyMethod()
-//                    .AllowCredentials()
-//                    .SetIsOriginAllowed((host) => true);
-//        }));
-builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
-        builder =>
-        {
-            builder.WithOrigins("*")
-           .AllowAnyMethod()
-           .AllowAnyHeader();
-        }));
 
 var app = builder.Build();
 
-//if (!app.Environment.IsDevelopment())
-//{
-//    //app.UseHangfireDashboard();
-//   // using var scope = app.Services.CreateScope();
-//   // using var server = new BackgroundJobServer();
-//   // await scope.ServiceProvider.GetRequiredService<ISystemTraceService>().StartService();
-//   // var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//   // var lstMessage = dbContext.TblAdMessage.ToList();
-//    foreach (var message in lstMessage)
-//    {
-//        MessageUtil.AddToCache(new MessageObject()
-//        {
-//            Code = message.Code,
-//            Language = message.Lang,
-//            Message = message.Value
-//        });
-//    }
-//}
-
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI(options =>
-//    {
-//        options.SwaggerEndpoint("/swagger/V1/swagger.json", "PROJECT WebAPI");
-//    });
-//}
+// 5. Middleware Pipeline
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/V1/swagger.json", "PROJECT WebAPI");
 });
 
-TransferObjectExtension.SetHttpContextAccessor(app.Services.GetRequiredService<IHttpContextAccessor>());
-app.EnableRequestBodyRewind();
-
-//app.UseHttpsRedirection();
-
-
+// 6. Add CORS before auth
 app.UseRouting();
 app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
-
 app.UseMiddleware<ActionLoggingMiddleware>();
-app.MapHub<SystemTraceServiceHub>("/SystemTrace");
+
+// 7. SignalR
 app.MapHub<RefreshServiceHub>("/Refresh");
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
-    RequestPath = "/Uploads"
-});
+// 9. Controllers + custom extension
+TransferObjectExtension.SetHttpContextAccessor(app.Services.GetRequiredService<IHttpContextAccessor>());
+app.EnableRequestBodyRewind();
 
 app.MapControllers();
 app.Run();

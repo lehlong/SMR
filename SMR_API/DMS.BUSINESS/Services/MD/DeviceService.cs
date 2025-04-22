@@ -26,7 +26,7 @@ namespace DMS.BUSINESS.Services.MD
                 var query = _dbContext.tblMdDevice.AsQueryable();
                 if (!string.IsNullOrWhiteSpace(filter.KeyWord))
                 {
-                    query = query.Where(x => x.Id.ToString().Contains(filter.KeyWord) || x.Name.Contains(filter.KeyWord));
+                    query = query.Where(x => x.Code.ToString().Contains(filter.KeyWord) || x.Name.Contains(filter.KeyWord));
                 }
                 if (filter.IsActive.HasValue)
                 {

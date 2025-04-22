@@ -1,1 +1,14 @@
-export const COMPANY_CODE_TAP_DOAN = '0000';
+export const RoleMeeting = [
+  {
+    name: 'Chủ toạ',
+    value: '01',
+  },
+  {
+    name: 'Thư ký',
+    value: '02',
+  },
+  {
+    name: 'Thành viên',
+    value: '03',
+  },
+];

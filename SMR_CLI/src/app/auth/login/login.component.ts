@@ -203,7 +203,7 @@ export class LoginComponent implements OnInit {
           });
       },
       error: (error) => {
-        this.message.create('error', `Hệ thống không nhận diện được! Vui lòng thử lại!`);
+        //this.message.create('error', `Hệ thống không nhận diện được! Vui lòng thử lại!`);
         console.log(error);
       },
     });

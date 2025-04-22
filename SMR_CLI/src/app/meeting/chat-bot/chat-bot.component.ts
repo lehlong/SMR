@@ -26,16 +26,23 @@ export class ChatBotComponent implements OnInit {
       role: 'User',
       content: this.inputChatbot,
     });
-    this.service.sendMessage(this.inputChatbot)
-    .subscribe({
-      next: (result) => {
-        result.content = result.content.replaceAll('**', '<br>');
-        this.chatAi.push(result)
+
+    let aiMessage = {
+      role: 'DeepSeek',
+      content: ''
+    };
+    this.chatAi.push(aiMessage);
+
+    this.service.sendMessage(this.inputChatbot).subscribe({
+      next: (chunk) => {
+        aiMessage.content += chunk.replaceAll('\n', '<br>');
       },
       error: (err) => {
         console.error('API error:', err);
       }
     });
+
     this.inputChatbot = '';
   }
+
 }

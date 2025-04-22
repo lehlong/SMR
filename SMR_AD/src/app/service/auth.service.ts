@@ -8,6 +8,7 @@ import { CommonService } from './common.service';
 export class AuthService {
   private authEndpoints = {
     login: 'Auth/Login',
+    loginFace: 'Auth/LoginFace',
     register: 'auth/register',
     forgotPassword: 'auth/forgot-password',
     resetPassword: 'auth/reset-password',
@@ -22,6 +23,10 @@ export class AuthService {
       credentials,
       false
     );
+  }
+
+  loginFace(params: any): Observable<any> {
+    return this.commonService.post('Auth/LoginFace', { imageBase64: params }, false)
   }
 
   getRightOfUser(params: any): Observable<any> {

@@ -9,15 +9,11 @@ namespace DMS.CORE.Entities.MD
     public class TblMdDevice : BaseEntity
     {
         [Key]
-        [Column("ID")]
-        public Guid Id { get; set; }
+        [Column("CODE")]
+        public string Code { get; set; }
 
-        [Column("NAME", TypeName = "NVARCHAR(100)")]
+        [Column("NAME")]
         public string Name { get; set; }
 
-        [Column("TYPE", TypeName = "NVARCHAR(100)")]
-        public string? Type { get; set; }
-
-       
     }
 }

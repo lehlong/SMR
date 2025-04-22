@@ -49,11 +49,10 @@ namespace DMS.API.Controllers.MD
             return Ok(transferObject);
         }
         [HttpPost("Insert")]
-        public async Task<IActionResult> Insert([FromBody] DeviceDto time)
+        public async Task<IActionResult> Insert([FromBody] DeviceDto data)
         {
             var transferObject = new TransferObject();
-            time.id = Guid.NewGuid();
-            var result = await _service.Add(time);
+            var result = await _service.Add(data);
             if (_service.Status)
             {
                 transferObject.Data = result;
@@ -70,10 +69,10 @@ namespace DMS.API.Controllers.MD
             return Ok(transferObject);
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] DeviceDto time)
+        public async Task<IActionResult> Update([FromBody] DeviceDto data)
         {
             var transferObject = new TransferObject();
-            await _service.Update(time);
+            await _service.Update(data);
             if (_service.Status)
             {
                 transferObject.Status = true;

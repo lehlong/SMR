@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Common;
@@ -21,54 +22,51 @@ namespace DMS.API.Controllers
         }
 
         [HttpGet("ChatDeepSeek")]
-        public async Task<IActionResult> GenerateTextAsync([FromQuery] string prompt, string model = "google/gemma-3-12b-it:free")
+        public async IAsyncEnumerable<string> GenerateTextAsync([FromQuery] string prompt, [FromQuery] string model = "google/gemma-3-12b-it:free")
         {
-            var transferObject = new TransferObject();
             var requestBody = new
             {
                 model,
-                messages = new[]
-            {
-                new { role = "user", content = prompt }
-            },
+                messages = new[] { new { role = "user", content = prompt } },
                 temperature = 0.7,
-                max_tokens = 1000
+                max_tokens = 1000,
+                stream = true
             };
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _configuration["DeepSeekKey"]);
             _httpClient.DefaultRequestHeaders.Add("HTTP-Referer", "https://sso.d2s.com.vn");
             _httpClient.DefaultRequestHeaders.Add("X-Title", "SMR");
 
-            try
+            using var response = await _httpClient.PostAsJsonAsync("https://openrouter.ai/api/v1/chat/completions", requestBody);
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var reader = new StreamReader(stream);
+
+            while (!reader.EndOfStream)
             {
-                var response = await _httpClient.PostAsJsonAsync("https://openrouter.ai/api/v1/chat/completions", requestBody);
-                if (!response.IsSuccessStatusCode)
+                var line = await reader.ReadLineAsync();
+                if (string.IsNullOrWhiteSpace(line) || !line.StartsWith("data:"))
+                    continue;
+
+                var contentJson = line.Substring("data:".Length).Trim();
+                if (contentJson == "[DONE]") yield break;
+
+                using var jsonDoc = JsonDocument.Parse(contentJson);
+                if (jsonDoc.RootElement.TryGetProperty("choices", out var choices) &&
+                    choices[0].TryGetProperty("delta", out var delta) &&
+                    delta.TryGetProperty("content", out var contentElement))
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    throw new HttpRequestException($"OpenRouter API error: {response.StatusCode} - {errorContent}");
+                    var content = contentElement.GetString();
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        yield return content;
+                        await Task.Delay(50);
+                    }
                 }
-                using var responseStream = await response.Content.ReadAsStreamAsync();
-                using var jsonDoc = await JsonDocument.ParseAsync(responseStream);
-
-                var content = jsonDoc.RootElement
-                    .GetProperty("choices")[0]
-                    .GetProperty("message")
-                    .GetProperty("content")
-                    .GetString();
-
-                transferObject.Data = new ChatBotResponse
-                {
-                    Role = "DeepSeek",
-                    Content = content,
-                };
-                return Ok(transferObject);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error calling OpenRouter: {ex.Message}");
-                throw;
             }
         }
+
+
+
     }
 
     public class ChatBotResponse
@@ -76,5 +74,39 @@ namespace DMS.API.Controllers
         public string? Role { get; set; }
         public string? Content { get; set; }
 
+    }
+
+    public class HttpResponseMessageResult : IActionResult
+    {
+        private readonly HttpResponseMessage _httpResponseMessage;
+
+        public HttpResponseMessageResult(HttpResponseMessage httpResponseMessage)
+        {
+            _httpResponseMessage = httpResponseMessage;
+        }
+
+        public async Task ExecuteResultAsync(ActionContext context)
+        {
+            var response = context.HttpContext.Response;
+
+            response.StatusCode = (int)_httpResponseMessage.StatusCode;
+
+            foreach (var header in _httpResponseMessage.Headers)
+            {
+                response.Headers[header.Key] = string.Join(",", header.Value);
+            }
+
+            if (_httpResponseMessage.Content != null)
+            {
+                var contentHeaders = _httpResponseMessage.Content.Headers;
+                foreach (var header in contentHeaders)
+                {
+                    response.Headers[header.Key] = string.Join(",", header.Value);
+                }
+
+                using var stream = await _httpResponseMessage.Content.ReadAsStreamAsync();
+                await stream.CopyToAsync(response.Body);
+            }
+        }
     }
 }
