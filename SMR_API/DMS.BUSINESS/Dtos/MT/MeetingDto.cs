@@ -25,7 +25,7 @@ namespace DMS.BUSINESS.Dtos.MT
         public List<TblMtMeetingResource> Resources { get; set; } = new List<TblMtMeetingResource>();
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<TblMdMeeting, MeetingDto>().ReverseMap();
+            profile.CreateMap<TblMtMeeting, MeetingDto>().ReverseMap();
         }
     }
 }

@@ -2,17 +2,19 @@
 using DMS.API.AppCode.Enum;
 using DMS.API.AppCode.Extensions;
 using DMS.BUSINESS.Dtos.MD;
+using DMS.BUSINESS.Dtos.MT;
 using DMS.BUSINESS.Services.MD;
+using DMS.BUSINESS.Services.MT;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DMS.API.Controllers.MD
+namespace DMS.API.Controllers.MT
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MeetingRoomController(IMeetingRoomService service) : ControllerBase
+    public class MeetingController(IMeetingService service) : ControllerBase
     {
-        public readonly IMeetingRoomService _service = service;
+        public readonly IMeetingService _service = service;
 
         [HttpGet("Search")]
         public async Task<IActionResult> Search([FromQuery] BaseFilter filter)
@@ -49,10 +51,10 @@ namespace DMS.API.Controllers.MD
             return Ok(transferObject);
         }
         [HttpPost("Insert")]
-        public async Task<IActionResult> Insert([FromBody] MeetingRoomDto time)
+        public async Task<IActionResult> Insert([FromBody] MeetingDto data)
         {
             var transferObject = new TransferObject();
-            var result = await _service.Add(time);
+            var result = await _service.Add(data);
             if (_service.Status)
             {
                 transferObject.Data = result;
@@ -69,10 +71,10 @@ namespace DMS.API.Controllers.MD
             return Ok(transferObject);
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] MeetingRoomDto time)
+        public async Task<IActionResult> Update([FromBody] MeetingDto data)
         {
             var transferObject = new TransferObject();
-            await _service.Update(time);
+            await _service.Update(data);
             if (_service.Status)
             {
                 transferObject.Status = true;
@@ -106,7 +108,7 @@ namespace DMS.API.Controllers.MD
             }
             return Ok(transferObject);
         }
+
+
     }
-       
-    
 }

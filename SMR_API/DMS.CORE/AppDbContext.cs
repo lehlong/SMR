@@ -131,11 +131,7 @@ namespace DMS.CORE
 
 
         public DbSet<TblMdAccountType> tblMdAccountType { get; set; }
-        public DbSet<TblMdMeeting> TblMdMeeting { get; set; }
-        public DbSet<TblMdMeetingPeolple> TblMdMeetingPeolple { get; set; }
-        public DbSet<TblMdMeetingFile> tblMdMeetingFiles { get; set; }
         public DbSet<TblMdDevice> tblMdDevice { get; set; }
-        public DbSet<TblMdMeetingRoom> tblMdMeetingRoom { get; set; }
         #endregion
 
         #region Meeting
