@@ -19,6 +19,7 @@ import { ChatBotComponent } from './chat-bot/chat-bot.component';
 import { MeetingInfoComponent } from './meeting-info/meeting-info.component';
 import { DocumentComponent } from './document/document.component';
 import { ResourceComponent } from "./resource/resource.component";
+import { RecordService } from '../service/record.service';
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -32,7 +33,7 @@ declare var JitsiMeetExternalAPI: any;
     MeetingInfoComponent,
     DocumentComponent,
     ResourceComponent
-],
+  ],
   templateUrl: './meeting.component.html',
   styleUrls: ['./meeting.component.scss'],
 })
@@ -44,18 +45,22 @@ export class MeetingComponent implements OnDestroy {
   user: any = {};
   meetingId: string | null = '';
   isJitsiInitialized = false;
-
+  isRecording = false;
   constructor(
     private route: ActivatedRoute,
     private gService: GlobalService,
     private layout: MainLayoutComponent,
-    private service: MeetingService
+    private service: MeetingService,
+    private recordService: RecordService
   ) {
     this.user = this.gService.getUserInfo();
     this.route.paramMap.subscribe((params) => {
       this.meetingId = params.get('id');
     });
     layout.showMainSidebar = false;
+    this.recordService.onRecordingComplete.subscribe((blob) => {
+      this.isRecording = false
+    });
   }
 
   onTabChange(index: number): void {
@@ -71,7 +76,7 @@ export class MeetingComponent implements OnDestroy {
     }
 
     const options = {
-      roomName: 'Tên cuộc họp',
+      roomName: this.meetingId,
       width: '100%',
       parentNode: this.jitsiContainer.nativeElement,
       configOverwrite: {
@@ -104,5 +109,10 @@ export class MeetingComponent implements OnDestroy {
     if (this.api) {
       this.api.dispose();
     }
+  }
+
+  startVoiceCommand() {
+    this.isRecording = true;
+    this.recordService.startRecording();
   }
 }

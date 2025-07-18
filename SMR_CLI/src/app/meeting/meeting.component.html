@@ -3,6 +3,9 @@
     <div class="item-control">
       <nz-icon class="icon-resize" nzType="home" nzTheme="outline" />
     </div>
+     <div class="item-control" (click)="startVoiceCommand()">
+      <nz-icon class="icon-resize" nzType="audio" nzTheme="outline"  nz-popover nzPopoverTitle="Voice Command" nzPopoverContent="Ra lệnh bằng giọng nói để điều khiển các thiết bị" nzPopoverPlacement="right"/>
+    </div>
     <div class="item-control">
       <nz-icon class="icon-resize" nzType="video-camera" nzTheme="outline" />
     </div>

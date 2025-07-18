@@ -6,7 +6,7 @@
           nzHideAdd>
           <ng-container *ngFor="let tab of tabs; trackBy: trackByTabId">
             <nz-tab [nzClosable]="true" [nzTitle]="tab.title">
-              <document-editor [id]="tab.id" [documentServerUrl]="'http://sso.d2s.com.vn:1239'"
+              <document-editor [id]="tab.id" [documentServerUrl]="'https://sso.d2s.com.vn:1239'"
                 [config]="tab.config"></document-editor>
             </nz-tab>
           </ng-container>
